@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import "./globals.css";
 import Providers from "./providers";
 
 import ThemeToggle from "@/src/app/components/ThemeToggle";
-import ModeToggle from "@/src/app/components/ModeToggle";
 import { Navbar } from "@/src/app/components/UI/NavBar";
-
-const BackgroundSelector = dynamic(
-  () => import("@/src/app/components/UI/BackgroundSelector"),
-  { ssr: false }
-);
+import BackgroundSelector from "@/src/app/components/UI/BackgroundSelector";
 
 export const metadata: Metadata = {
   title: "EYRO | Portfolio",
@@ -57,7 +51,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </footer>
 
           <ThemeToggle />
-          <ModeToggle />
         </Providers>
       </body>
     </html>
