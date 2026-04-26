@@ -13,7 +13,7 @@ export default function Home() {
         .h-card {
           background: rgba(255,255,255,0.55);
           border: 1px solid rgba(30,139,198,0.18);
-          box-shadow: 0 20px 70px rgba(0,0,0,0.10);
+          box-shadow: 0 20px 70px rgba(0,0,0,0.10);  
         }
         html.dark .h-card {
           background: rgba(0,0,0,0.22);
