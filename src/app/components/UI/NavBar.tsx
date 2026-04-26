@@ -6,72 +6,55 @@ import { usePathname } from "next/navigation";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/src/app/components/lib/utils";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 
-// Si ya tienes ThemeContext, úsalo:
 import { useTheme } from "@/src/app/components/utils/ThemeContext";
+
+type DropdownChild = {
+  href: string;
+  label: string;
+};
 
 type NavItem =
   | {
       type: "section";
-      id: string; // "hero" | "projects" | "music" ...
+      id: string;
       label: string;
     }
   | {
       type: "route";
-      href: string; // "/skills"
+      href: string;
       label: string;
     }
   | {
       type: "external";
-      href: string; // "https://..."
+      href: string;
       label: string;
       icon?: "github" | "linkedin" | "mail";
+    }
+  | {
+      type: "dropdown";
+      label: string;
+      href?: string;
+      children: DropdownChild[];
     };
 
-const navbarVariants = cva(
-  "sticky top-0 z-[1000] w-full py-4",
-  {
-    variants: {
-      density: {
-        default: "",
-        compact: "py-3",
-      },
+const navbarVariants = cva("sticky top-0 z-[1000] w-full py-4", {
+  variants: {
+    density: {
+      default: "",
+      compact: "py-3",
     },
-    defaultVariants: {
-      density: "default",
-    },
-  }
-);
-
-const containerVariants = cva(
-  [
-    "mx-auto w-[90%] max-w-[1100px]",
-    "rounded-[40px] px-6 py-3",
-    "backdrop-blur-md",
-    "flex items-center justify-between gap-6",
-    "transition-all duration-300",
-    "border shadow-[0_8px_30px_rgba(0,0,0,0.35)]",
-  ].join(" "),
-  {
-    variants: {
-      theme: {
-        dark: "bg-black/45 border-[#004080]/60 text-white",
-        light: "bg-white/55 border-[#608ab4]/60 text-zinc-900",
-      },
-    },
-    defaultVariants: {
-      theme: "dark",
-    },
-  }
-);
+  },
+  defaultVariants: {
+    density: "default",
+  },
+});
 
 const linkBase =
   "text-[15px] transition-colors duration-200 hover:text-[#0077cc]";
-
-const activeLink =
-  "text-[#0077cc] font-extrabold";
+const activeLink = "text-[#0077cc] font-extrabold";
 
 function SocialIcon({ icon }: { icon: "github" | "linkedin" | "mail" }) {
   if (icon === "github") return <FaGithub />;
@@ -84,11 +67,8 @@ export interface NavbarProps
     VariantProps<typeof navbarVariants> {
   brand?: { label: string; href?: string };
   items: NavItem[];
-  /** íconos a la derecha (externos) */
-  socials?: NavItem[]; // usa type:"external" + icon
-  /** true = activa scrollspy en Home para items type:"section" */
+  socials?: NavItem[];
   spy?: boolean;
-  /** Ajuste fino si tu navbar tapa las secciones */
   spyRootMargin?: string;
 }
 
@@ -105,12 +85,27 @@ export function Navbar({
   const pathname = usePathname();
   const isHome = pathname === "/";
   const { darkMode } = useTheme();
-
   const theme = darkMode ? "dark" : "light";
 
-  // ===== Scrollspy (solo sections + solo en Home) =====
+  const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
+  const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleDropdownEnter = (label: string) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpenDropdown(label);
+  };
+
+  const handleDropdownLeave = () => {
+    closeTimer.current = setTimeout(() => setOpenDropdown(null), 150);
+  };
+
+  // ===== Scrollspy =====
   const sectionItems = React.useMemo(
-    () => items.filter((i) => i.type === "section") as Extract<NavItem, { type: "section" }>[],
+    () =>
+      items.filter((i) => i.type === "section") as Extract<
+        NavItem,
+        { type: "section" }
+      >[],
     [items]
   );
 
@@ -132,8 +127,10 @@ export function Navbar({
       (entries) => {
         const visible = entries
           .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
-
+          .sort(
+            (a, b) =>
+              (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0)
+          )[0];
         if (visible?.target?.id) setActiveSection(visible.target.id);
       },
       {
@@ -153,7 +150,6 @@ export function Navbar({
       const href = isHome ? `#${item.id}` : `/#${item.id}`;
       const isActive = isHome && activeSection === item.id;
 
-      // en Home: anchor normal. fuera de Home: Link a "/#id"
       if (href.startsWith("#")) {
         return (
           <a className={cn(linkBase, isActive && activeLink)} href={href}>
@@ -161,7 +157,6 @@ export function Navbar({
           </a>
         );
       }
-
       return (
         <Link className={cn(linkBase, isActive && activeLink)} href={href}>
           {item.label}
@@ -173,9 +168,153 @@ export function Navbar({
     if (item.type === "route") {
       const isActive = pathname === item.href;
       return (
-        <Link className={cn(linkBase, isActive && activeLink)} href={item.href}>
+        <Link
+          className={cn(linkBase, isActive && activeLink)}
+          href={item.href}
+        >
           {item.label}
         </Link>
+      );
+    }
+
+    // DROPDOWN
+    if (item.type === "dropdown") {
+      const isOpen = openDropdown === item.label;
+      const isActive = item.children.some((c) => pathname.startsWith(c.href)) ||
+        (item.href && pathname.startsWith(item.href));
+
+      return (
+        <div
+          className="relative"
+          onMouseEnter={() => handleDropdownEnter(item.label)}
+          onMouseLeave={handleDropdownLeave}
+        >
+          {item.href ? (
+            <Link
+              href={item.href}
+              className={cn(
+                linkBase,
+                "flex items-center gap-1",
+                isActive && activeLink
+              )}
+            >
+              {item.label}
+              <span
+                style={{
+                  display: "inline-block",
+                  transition: "transform 0.2s",
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  fontSize: "10px",
+                  opacity: 0.7,
+                  marginTop: "1px",
+                }}
+              >
+                ▾
+              </span>
+            </Link>
+          ) : (
+            <button
+              className={cn(
+                linkBase,
+                "flex items-center gap-1 bg-transparent border-0 cursor-pointer p-0",
+                isActive && activeLink
+              )}
+            >
+              {item.label}
+              <span
+                style={{
+                  display: "inline-block",
+                  transition: "transform 0.2s",
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                  fontSize: "10px",
+                  opacity: 0.7,
+                  marginTop: "1px",
+                }}
+              >
+                ▾
+              </span>
+            </button>
+          )}
+
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                transition={{ duration: 0.15 }}
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 10px)",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  minWidth: "170px",
+                  borderRadius: "14px",
+                  padding: "6px",
+                  zIndex: 9999,
+                  backdropFilter: "blur(12px)",
+                  border:
+                    theme === "dark"
+                      ? "1px solid rgba(255,255,255,0.12)"
+                      : "1px solid rgba(0,0,0,0.10)",
+                  background:
+                    theme === "dark"
+                      ? "rgba(10,10,10,0.85)"
+                      : "rgba(255,255,255,0.92)",
+                  boxShadow: "0 8px 30px rgba(0,0,0,0.28)",
+                }}
+                onMouseEnter={() => handleDropdownEnter(item.label)}
+                onMouseLeave={handleDropdownLeave}
+              >
+                {item.children.map((child) => {
+                  const childActive = pathname === child.href || pathname.startsWith(child.href + "/");
+                  return (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      style={{
+                        display: "block",
+                        padding: "8px 14px",
+                        borderRadius: "9px",
+                        fontSize: "14px",
+                        fontWeight: childActive ? 700 : 500,
+                        color: childActive
+                          ? "#0077cc"
+                          : theme === "dark"
+                          ? "rgba(255,255,255,0.9)"
+                          : "rgba(0,0,0,0.85)",
+                        background: childActive
+                          ? theme === "dark"
+                            ? "rgba(0,119,204,0.15)"
+                            : "rgba(0,119,204,0.08)"
+                          : "transparent",
+                        textDecoration: "none",
+                        transition: "background 0.15s, color 0.15s",
+                        whiteSpace: "nowrap",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!childActive) {
+                          (e.currentTarget as HTMLElement).style.background =
+                            theme === "dark"
+                              ? "rgba(255,255,255,0.07)"
+                              : "rgba(0,0,0,0.05)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!childActive) {
+                          (e.currentTarget as HTMLElement).style.background =
+                            "transparent";
+                        }
+                      }}
+                    >
+                      {child.label}
+                    </Link>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       );
     }
 
@@ -198,61 +337,66 @@ export function Navbar({
     );
   };
 
-return (
-  <nav className={cn(navbarVariants({ density }), className)} {...props}>
-    {/* Outer pill */}
-    <div
-      className={cn(
-        "mx-auto w-[92%] max-w-[1200px] rounded-[60px] p-[10px] border",
-        "backdrop-blur-md transition-all duration-300",
-        theme === "dark"
-          ? "bg-black/20 border-[#1e8bc6]/60 shadow-[0_10px_40px_rgba(0,0,0,0.55)]"
-          : "bg-white/35 border-[#1e8bc6]/60 shadow-[0_10px_40px_rgba(0,0,0,0.18)]"
-      )}
-    >
-      {/* Inner pill */}
+  return (
+    <nav className={cn(navbarVariants({ density }), className)} {...props}>
       <div
         className={cn(
-          "w-full rounded-[48px] px-8 py-4 flex items-center justify-between gap-6 border",
+          "mx-auto w-[92%] max-w-[1200px] rounded-[60px] p-[10px] border",
+          "backdrop-blur-md transition-all duration-300",
           theme === "dark"
-            ? "bg-black/45 border-white/15 text-white"
-            : "bg-white/70 border-black/15 text-zinc-900"
+            ? "bg-black/20 border-[#1e8bc6]/60 shadow-[0_10px_40px_rgba(0,0,0,0.55)]"
+            : "bg-white/35 border-[#1e8bc6]/60 shadow-[0_10px_40px_rgba(0,0,0,0.18)]"
         )}
       >
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="font-extrabold text-[20px] tracking-[0.5px]"
+        <div
+          className={cn(
+            "w-full rounded-[48px] px-8 py-4 flex items-center justify-between gap-6 border",
+            theme === "dark"
+              ? "bg-black/45 border-white/15 text-white"
+              : "bg-white/70 border-black/15 text-zinc-900"
+          )}
         >
-          <Link className="text-[#1e8bc6d1] no-underline" href={brand.href ?? "/"}>
-            {brand.label}
-          </Link>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45 }}
+            className="font-extrabold text-[20px] tracking-[0.5px]"
+          >
+            <Link
+              className="text-[#1e8bc6d1] no-underline"
+              href={brand.href ?? "/"}
+            >
+              {brand.label}
+            </Link>
+          </motion.div>
 
-        <ul className="hidden md:flex list-none items-center gap-12 m-0 p-0">
-          {items.map((item, idx) => (
-            <li key={`${item.type}-${idx}`}>{renderItem(item)}</li>
-          ))}
-        </ul>
+          <ul className="hidden md:flex list-none items-center gap-12 m-0 p-0">
+            {items.map((item, idx) => (
+              <li key={`${item.type}-${idx}`} style={{ position: "relative" }}>
+                {renderItem(item)}
+              </li>
+            ))}
+          </ul>
 
-        <div className="hidden md:flex items-center">
-          {socials.map((s, idx) => (
-            <React.Fragment key={`social-${idx}`}>{renderItem(s)}</React.Fragment>
-          ))}
+          <div className="hidden md:flex items-center">
+            {socials.map((s, idx) => (
+              <React.Fragment key={`social-${idx}`}>
+                {renderItem(s)}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
 
-    <style jsx>{`
-      @media (max-width: 768px) {
-        nav {
-          display: none;
+      <style jsx>{`
+        @media (max-width: 768px) {
+          nav {
+            display: none;
+          }
         }
-      }
-    `}</style>
-  </nav>
-);
+      `}</style>
+    </nav>
+  );
 }
 
 export { navbarVariants };

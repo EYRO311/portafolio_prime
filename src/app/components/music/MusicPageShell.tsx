@@ -1,4 +1,7 @@
+"use client";
+
 import { ReactNode } from "react";
+import { useTheme } from "@/src/app/components/utils/ThemeContext";
 
 type MusicPageShellProps = {
   title: string;
@@ -13,13 +16,30 @@ export default function MusicPageShell({
   actions,
   children,
 }: MusicPageShellProps) {
+  const { darkMode: dark } = useTheme();
+
   return (
-    <main className="min-h-screen p-6">
-      <section className="mx-auto max-w-6xl">
+    <main
+      className="min-h-screen p-6"
+      style={{ color: dark ? "#ffffff" : "#0a0a0a" }}
+    >
+      <section className="mx-auto max-w-6xl pt-20">
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-semibold">{title}</h1>
-            {description ? <p className="opacity-70">{description}</p> : null}
+            <h1
+              className="text-3xl font-semibold"
+              style={{ color: dark ? "#ffffff" : "#0a0a0a" }}
+            >
+              {title}
+            </h1>
+            {description ? (
+              <p
+                className="mt-1"
+                style={{ color: dark ? "rgba(255,255,255,0.65)" : "rgba(0,0,0,0.55)" }}
+              >
+                {description}
+              </p>
+            ) : null}
           </div>
 
           {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}

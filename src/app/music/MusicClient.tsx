@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { useTheme } from "@/src/app/components/utils/ThemeContext";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -94,15 +95,22 @@ function Cover({
   src,
   alt,
   className = "h-14 w-14",
+  dark,
 }: {
   src: string | null;
   alt: string;
   className?: string;
+  dark?: boolean;
 }) {
   if (!src) {
     return (
       <div
-        className={`${className} flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs opacity-60`}
+        className={`${className} flex items-center justify-center rounded-xl text-xs opacity-60`}
+        style={{
+          border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(0,0,0,0.10)",
+          background: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)",
+          color: dark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)",
+        }}
       >
         No image
       </div>
@@ -113,12 +121,17 @@ function Cover({
     <img
       src={src}
       alt={alt}
-      className={`${className} rounded-xl border border-white/10 object-cover`}
+      className={`${className} rounded-xl object-cover`}
+      style={{
+        border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(0,0,0,0.10)",
+      }}
     />
   );
 }
 
 export default function MusicClient() {
+  const { darkMode: dark } = useTheme();
+
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [loadedTimeRange, setLoadedTimeRange] = useState<TimeRange | null>(null);
   const [data, setData] = useState<DashboardResponse | null>(null);
@@ -130,6 +143,21 @@ export default function MusicClient() {
 
   const inFlightRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
+
+  // Theme-aware class helpers
+  const card = {
+    border: dark ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(0,0,0,0.09)",
+    background: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",
+    color: dark ? "#ffffff" : "#0a0a0a",
+  };
+
+  const cardInner = {
+    border: dark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.07)",
+    background: dark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
+  };
+
+  const muted = dark ? "rgba(255,255,255,0.60)" : "rgba(0,0,0,0.50)";
+  const subtle = dark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.70)";
 
   const loadDashboard = useCallback(async () => {
     if (inFlightRef.current) return;
@@ -202,16 +230,26 @@ export default function MusicClient() {
 
   if (!isAuthed) {
     return (
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-        <h2 className="mb-2 text-2xl font-semibold">Conecta tu Spotify</h2>
-        <p className="mb-4 opacity-80">
+      <div
+        className="rounded-3xl p-6"
+        style={{ ...card, border: card.border }}
+      >
+        <h2 className="mb-2 text-2xl font-semibold" style={{ color: card.color }}>
+          Conecta tu Spotify
+        </h2>
+        <p className="mb-4" style={{ color: subtle }}>
           Necesito permisos para leer top tracks, top artists, reproducción actual,
           historial reciente y playlists.
         </p>
 
         <a
           href="/auth/spotify/login"
-          className="inline-flex rounded-xl border border-white/15 px-4 py-2 font-medium transition hover:bg-white/5"
+          className="inline-flex rounded-xl px-4 py-2 font-medium transition"
+          style={{
+            border: card.border,
+            color: card.color,
+            background: "transparent",
+          }}
         >
           Conectar Spotify
         </a>
@@ -221,14 +259,15 @@ export default function MusicClient() {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
+      {/* Control section */}
+      <section className="rounded-3xl p-6" style={card}>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-sm opacity-60">Spotify dashboard</p>
-            <h2 className="text-2xl font-semibold">
+            <p className="text-sm" style={{ color: muted }}>Spotify dashboard</p>
+            <h2 className="text-2xl font-semibold" style={{ color: card.color }}>
               {data?.profile.name ?? "Carga manual"}
             </h2>
-            <p className="text-sm opacity-70">
+            <p className="text-sm" style={{ color: subtle }}>
               {hasData
                 ? `Última actualización: ${formatDate(data?.generatedAt)}`
                 : "No se hará ninguna solicitud hasta que presiones un botón."}
@@ -241,11 +280,22 @@ export default function MusicClient() {
                 key={value}
                 onClick={() => setTimeRange(value)}
                 disabled={loading || refreshing}
-                className={`rounded-xl border px-3 py-2 text-sm transition ${
-                  timeRange === value
-                    ? "border-white/30 bg-white/10"
-                    : "border-white/10 hover:bg-white/5"
-                } disabled:cursor-not-allowed disabled:opacity-60`}
+                className="rounded-xl px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-60"
+                style={{
+                  border:
+                    timeRange === value
+                      ? dark
+                        ? "1px solid rgba(255,255,255,0.30)"
+                        : "1px solid rgba(0,0,0,0.28)"
+                      : card.border,
+                  background:
+                    timeRange === value
+                      ? dark
+                        ? "rgba(255,255,255,0.10)"
+                        : "rgba(0,0,0,0.07)"
+                      : "transparent",
+                  color: card.color,
+                }}
               >
                 {timeRangeLabels[value]}
               </button>
@@ -254,7 +304,12 @@ export default function MusicClient() {
             <button
               onClick={loadDashboard}
               disabled={loading || refreshing}
-              className="rounded-xl border border-white/10 px-3 py-2 text-sm transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-60"
+              style={{
+                border: card.border,
+                color: card.color,
+                background: "transparent",
+              }}
             >
               {loading
                 ? "Cargando..."
@@ -270,7 +325,7 @@ export default function MusicClient() {
         </div>
 
         {selectedRangeChanged ? (
-          <p className="mt-4 text-sm text-yellow-300">
+          <p className="mt-4 text-sm" style={{ color: dark ? "#fcd34d" : "#b45309" }}>
             Cambiaste el rango a <strong>{timeRangeLabels[timeRange]}</strong>, pero los
             datos en pantalla siguen mostrando{" "}
             <strong>{timeRangeLabels[loadedTimeRange as TimeRange]}</strong> hasta que
@@ -278,18 +333,23 @@ export default function MusicClient() {
           </p>
         ) : null}
 
-        {error ? <p className="mt-4 text-sm text-red-400">{error}</p> : null}
+        {error ? (
+          <p className="mt-4 text-sm" style={{ color: dark ? "#f87171" : "#dc2626" }}>
+            {error}
+          </p>
+        ) : null}
       </section>
 
       {!hasData && !loading ? (
-        <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-          <h3 className="mb-2 text-xl font-semibold">Listo para consultar Spotify</h3>
-          <p className="text-sm opacity-75">
+        <section className="rounded-3xl p-6" style={card}>
+          <h3 className="mb-2 text-xl font-semibold" style={{ color: card.color }}>
+            Listo para consultar Spotify
+          </h3>
+          <p className="text-sm" style={{ color: subtle }}>
             Selecciona un rango y presiona <strong>Cargar dashboard</strong>.
           </p>
-
           {!hasTriedLoad ? (
-            <p className="mt-3 text-sm opacity-60">
+            <p className="mt-3 text-sm" style={{ color: muted }}>
               No hay auto-fetch, no hay polling y no se consulta al cambiar tabs.
             </p>
           ) : null}
@@ -297,98 +357,105 @@ export default function MusicClient() {
       ) : null}
 
       {loading && !hasData ? (
-        <p className="opacity-70">Cargando dashboard de Spotify...</p>
+        <p style={{ color: subtle, opacity: 0.7 }}>Cargando dashboard de Spotify...</p>
       ) : null}
 
       {hasData ? (
         <>
+          {/* Profile + Currently playing */}
           <section className="grid gap-6 lg:grid-cols-2">
-            <article className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h3 className="mb-4 text-xl font-semibold">Perfil</h3>
+            <article className="rounded-3xl p-6" style={card}>
+              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
+                Perfil
+              </h3>
 
               <div className="mb-4 flex items-center gap-4">
                 <Cover
-                  src={data?.profile.image||null}
-                  alt={data?.profile.name||""}
+                  src={data?.profile.image || null}
+                  alt={data?.profile.name || ""}
                   className="h-16 w-16"
+                  dark={dark}
                 />
                 <div>
-                  <h4 className="text-lg font-semibold">{data?.profile.name}</h4>
-                  <p className="text-sm opacity-70">
+                  <h4 className="text-lg font-semibold" style={{ color: card.color }}>
+                    {data?.profile.name}
+                  </h4>
+                  <p className="text-sm" style={{ color: subtle }}>
                     {data?.profile.product ?? "Cuenta Spotify"} ·{" "}
                     {data?.profile.followers} followers
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2 text-sm opacity-90">
-                <p>
-                  <span className="opacity-60">Email:</span>{" "}
+              <div className="space-y-2 text-sm">
+                <p style={{ color: card.color }}>
+                  <span style={{ color: muted }}>Email:</span>{" "}
                   {data?.profile.email ?? "No disponible"}
                 </p>
-                <p>
-                  <span className="opacity-60">País:</span>{" "}
+                <p style={{ color: card.color }}>
+                  <span style={{ color: muted }}>País:</span>{" "}
                   {data?.profile.country ?? "No disponible"}
                 </p>
-                <p>
-                  <span className="opacity-60">Plan:</span>{" "}
+                <p style={{ color: card.color }}>
+                  <span style={{ color: muted }}>Plan:</span>{" "}
                   {data?.profile.product ?? "No disponible"}
                 </p>
               </div>
             </article>
 
-            <article className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h3 className="mb-4 text-xl font-semibold">Currently playing</h3>
+            <article className="rounded-3xl p-6" style={card}>
+              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
+                Currently playing
+              </h3>
 
               {!data?.playback?.item ? (
-                <div className="space-y-2 text-sm opacity-80">
+                <div className="space-y-2 text-sm" style={{ color: subtle }}>
                   <p>No hay reproducción activa en este momento.</p>
                   {data?.playback?.device ? (
                     <p>
-                      Dispositivo detectado: {data?.playback.device.name} ·{" "}
-                      {data?.playback.device.type}
+                      Dispositivo detectado: {data.playback.device.name} ·{" "}
+                      {data.playback.device.type}
                     </p>
                   ) : null}
                 </div>
               ) : (
                 <div className="flex gap-4">
                   <Cover
-                    src={data?.playback.item.image}
-                    alt={data?.playback.item.name}
+                    src={data.playback.item.image}
+                    alt={data.playback.item.name}
                     className="h-20 w-20"
+                    dark={dark}
                   />
-
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm opacity-60">
-                      {data?.playback.isPlaying ? "Reproduciendo" : "En pausa"}
+                    <p className="text-sm" style={{ color: muted }}>
+                      {data.playback.isPlaying ? "Reproduciendo" : "En pausa"}
                     </p>
-                    <h4 className="truncate text-lg font-semibold">
-                      {data?.playback.item.name}
+                    <h4 className="truncate text-lg font-semibold" style={{ color: card.color }}>
+                      {data.playback.item.name}
                     </h4>
-                    <p className="truncate text-sm opacity-80">
-                      {data?.playback.item.artists}
+                    <p className="truncate text-sm" style={{ color: subtle }}>
+                      {data.playback.item.artists}
                     </p>
-                    <p className="truncate text-sm opacity-60">
-                      {data?.playback.item.album}
+                    <p className="truncate text-sm" style={{ color: muted }}>
+                      {data.playback.item.album}
                     </p>
-
-                    <div className="mt-3 text-sm opacity-80">
+                    <div className="mt-3 text-sm" style={{ color: subtle }}>
                       <p>
-                        Progreso: {formatDuration(data?.playback.progressMs)} /{" "}
-                        {formatDuration(data?.playback.item.durationMs)}
+                        Progreso: {formatDuration(data.playback.progressMs)} /{" "}
+                        {formatDuration(data.playback.item.durationMs)}
                       </p>
                       <p>
-                        Dispositivo: {data?.playback.device?.name ?? "No disponible"} ·{" "}
-                        {data?.playback.device?.type ?? "—"}
+                        Dispositivo: {data.playback.device?.name ?? "No disponible"} ·{" "}
+                        {data.playback.device?.type ?? "—"}
                       </p>
                     </div>
-
-                    {data?.playback.item.spotifyUrl ? (
+                    {data.playback.item.spotifyUrl ? (
                       <a
-                        href={data?.playback.item.spotifyUrl}
+                        href={data.playback.item.spotifyUrl}
                         target="_blank"
                         rel="noreferrer"
                         className="mt-3 inline-flex text-sm underline"
+                        style={{ color: "#1e8bc6" }}
                       >
                         Abrir en Spotify
                       </a>
@@ -399,26 +466,37 @@ export default function MusicClient() {
             </article>
           </section>
 
-          <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-            <h3 className="mb-4 text-xl font-semibold">Top artists</h3>
-
+          {/* Top Artists */}
+          <section className="rounded-3xl p-6" style={card}>
+            <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
+              Top artists
+            </h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {data?.topArtists.map((artist, index) => (
-                <article key={artist.id} className="rounded-2xl border border-white/10 p-4">
-                  <Cover src={artist.image} alt={artist.name} className="mb-3 h-28 w-full" />
-                  <p className="text-xs opacity-50">#{index + 1}</p>
-                  <h4 className="truncate font-semibold">{artist.name}</h4>
-                  <p className="mt-1 text-xs opacity-70">
+                <article key={artist.id} className="rounded-2xl p-4" style={cardInner}>
+                  <Cover
+                    src={artist.image}
+                    alt={artist.name}
+                    className="mb-3 h-28 w-full"
+                    dark={dark}
+                  />
+                  <p className="text-xs" style={{ color: muted }}>#{index + 1}</p>
+                  <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                    {artist.name}
+                  </h4>
+                  <p className="mt-1 text-xs" style={{ color: subtle }}>
                     {artist.genres.slice(0, 2).join(", ") || "Sin géneros"}
                   </p>
-                  <p className="mt-1 text-xs opacity-50">{artist.followers} followers</p>
-
+                  <p className="mt-1 text-xs" style={{ color: muted }}>
+                    {artist.followers} followers
+                  </p>
                   {artist.spotifyUrl ? (
                     <a
                       href={artist.spotifyUrl}
                       target="_blank"
                       rel="noreferrer"
                       className="mt-3 inline-flex text-sm underline"
+                      style={{ color: "#1e8bc6" }}
                     >
                       Ver artista
                     </a>
@@ -428,25 +506,32 @@ export default function MusicClient() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-            <h3 className="mb-4 text-xl font-semibold">Top tracks</h3>
-
+          {/* Top Tracks */}
+          <section className="rounded-3xl p-6" style={card}>
+            <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
+              Top tracks
+            </h3>
             <div className="grid gap-3">
               {data?.topTracks.map((track, index) => (
                 <article
                   key={track.id}
-                  className="flex items-center gap-4 rounded-2xl border border-white/10 p-4"
+                  className="flex items-center gap-4 rounded-2xl p-4"
+                  style={cardInner}
                 >
-                  <Cover src={track.image} alt={track.name} />
-
+                  <Cover src={track.image} alt={track.name} dark={dark} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs opacity-50">#{index + 1}</p>
-                    <h4 className="truncate font-semibold">{track.name}</h4>
-                    <p className="truncate text-sm opacity-80">{track.artists}</p>
-                    <p className="truncate text-sm opacity-50">{track.album}</p>
+                    <p className="text-xs" style={{ color: muted }}>#{index + 1}</p>
+                    <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                      {track.name}
+                    </h4>
+                    <p className="truncate text-sm" style={{ color: subtle }}>
+                      {track.artists}
+                    </p>
+                    <p className="truncate text-sm" style={{ color: muted }}>
+                      {track.album}
+                    </p>
                   </div>
-
-                  <div className="text-right text-sm opacity-70">
+                  <div className="text-right text-sm" style={{ color: subtle }}>
                     <p>{formatDuration(track.durationMs)}</p>
                     {track.spotifyUrl ? (
                       <a
@@ -454,6 +539,7 @@ export default function MusicClient() {
                         target="_blank"
                         rel="noreferrer"
                         className="underline"
+                        style={{ color: "#1e8bc6" }}
                       >
                         Abrir
                       </a>
@@ -464,25 +550,33 @@ export default function MusicClient() {
             </div>
           </section>
 
+          {/* History + Playlists */}
           <section className="grid gap-6 lg:grid-cols-2">
-            <article className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h3 className="mb-4 text-xl font-semibold">Historial reciente</h3>
-
+            <article className="rounded-3xl p-6" style={card}>
+              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
+                Historial reciente
+              </h3>
               <div className="grid gap-3">
                 {data?.recentlyPlayed.length === 0 ? (
-                  <p className="text-sm opacity-70">No hay historial reciente disponible.</p>
+                  <p className="text-sm" style={{ color: subtle }}>
+                    No hay historial reciente disponible.
+                  </p>
                 ) : (
                   data?.recentlyPlayed.map((track) => (
                     <article
                       key={`${track.id}-${track.playedAt}`}
-                      className="flex items-center gap-4 rounded-2xl border border-white/10 p-4"
+                      className="flex items-center gap-4 rounded-2xl p-4"
+                      style={cardInner}
                     >
-                      <Cover src={track.image} alt={track.name} />
-
+                      <Cover src={track.image} alt={track.name} dark={dark} />
                       <div className="min-w-0 flex-1">
-                        <h4 className="truncate font-semibold">{track.name}</h4>
-                        <p className="truncate text-sm opacity-80">{track.artists}</p>
-                        <p className="truncate text-xs opacity-50">
+                        <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                          {track.name}
+                        </h4>
+                        <p className="truncate text-sm" style={{ color: subtle }}>
+                          {track.artists}
+                        </p>
+                        <p className="truncate text-xs" style={{ color: muted }}>
                           {formatDate(track.playedAt)}
                         </p>
                       </div>
@@ -492,26 +586,31 @@ export default function MusicClient() {
               </div>
             </article>
 
-            <article className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h3 className="mb-4 text-xl font-semibold">Playlists seguidas / creadas</h3>
-
+            <article className="rounded-3xl p-6" style={card}>
+              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
+                Playlists seguidas / creadas
+              </h3>
               <div className="grid gap-3">
                 {data?.playlists.length === 0 ? (
-                  <p className="text-sm opacity-70">No hay playlists disponibles.</p>
+                  <p className="text-sm" style={{ color: subtle }}>
+                    No hay playlists disponibles.
+                  </p>
                 ) : (
                   data?.playlists.map((playlist) => (
                     <article
                       key={playlist.id}
-                      className="flex items-center gap-4 rounded-2xl border border-white/10 p-4"
+                      className="flex items-center gap-4 rounded-2xl p-4"
+                      style={cardInner}
                     >
-                      <Cover src={playlist.image} alt={playlist.name} />
-
+                      <Cover src={playlist.image} alt={playlist.name} dark={dark} />
                       <div className="min-w-0 flex-1">
-                        <h4 className="truncate font-semibold">{playlist.name}</h4>
-                        <p className="truncate text-sm opacity-80">
+                        <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                          {playlist.name}
+                        </h4>
+                        <p className="truncate text-sm" style={{ color: subtle }}>
                           {playlist.owner} · {playlist.tracksTotal} tracks
                         </p>
-                        <p className="truncate text-xs opacity-50">
+                        <p className="truncate text-xs" style={{ color: muted }}>
                           {playlist.collaborative
                             ? "Collaborative"
                             : playlist.public === true
@@ -521,13 +620,13 @@ export default function MusicClient() {
                             : "Unknown"}
                         </p>
                       </div>
-
                       {playlist.spotifyUrl ? (
                         <a
                           href={playlist.spotifyUrl}
                           target="_blank"
                           rel="noreferrer"
                           className="text-sm underline"
+                          style={{ color: "#1e8bc6" }}
                         >
                           Abrir
                         </a>

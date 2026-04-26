@@ -6,7 +6,7 @@ import { TypeAnimation } from "react-type-animation";
 import {
   SiNodedotjs,
   SiHtml5,
-  SiCss3,
+  SiCss,
   SiJavascript,
   SiTypescript,
   SiNextdotjs,
@@ -18,6 +18,7 @@ import { Press_Start_2P, VT323 } from "next/font/google";
 
 import { cn } from "@/src/app/components/lib/utils";
 import { useTheme } from "@/src/app/components/utils/ThemeContext";
+import { useMode } from "@/src/app/components/utils/ModeContext";
 
 const pixel = Press_Start_2P({ subsets: ["latin"], weight: "400" });
 const terminal = VT323({ subsets: ["latin"], weight: "400" });
@@ -36,13 +37,25 @@ export type TechIconId =
 const TECH_ICON_MAP: Record<TechIconId, React.ComponentType<any>> = {
   node: SiNodedotjs,
   html: SiHtml5,
-  css: SiCss3,
+  css: SiCss,
   javascript: SiJavascript,
   typescript: SiTypescript,
   next: SiNextdotjs,
   angular: SiAngular,
   react: SiReact,
   python: SiPython,
+};
+
+const TECH_NAMES: Record<TechIconId, string> = {
+  node: "Node.js",
+  html: "HTML5",
+  css: "CSS3",
+  javascript: "JavaScript",
+  typescript: "TypeScript",
+  next: "Next.js",
+  angular: "Angular",
+  react: "React",
+  python: "Python",
 };
 
 export interface HeroProps extends React.HTMLAttributes<HTMLElement> {
@@ -55,6 +68,7 @@ export interface HeroProps extends React.HTMLAttributes<HTMLElement> {
   description: React.ReactNode;
   tech?: TechIconId[];
   techVelocity?: number;
+  techCopies?: number;
   forceThemeClass?: "dark" | "light";
 }
 
@@ -73,6 +87,7 @@ export function Hero({
   ...props
 }: HeroProps) {
   const { darkMode } = useTheme();
+  const { mode } = useMode();
   const themeClass = forceThemeClass ?? (darkMode ? "dark" : "light");
 
   const sequence = React.useMemo<(string | number)[]>(() => {
@@ -98,6 +113,22 @@ export function Hero({
     return (140 / v) * 10;
   }, [techVelocity]);
 
+  if (mode === "formal") {
+    return (
+      <FormalHero
+        id={id}
+        name={name}
+        roles={roles}
+        description={description}
+        tech={tech}
+        darkMode={darkMode}
+        className={className}
+        {...props}
+      />
+    );
+  }
+
+  // ===== RELAXED MODE (original style) =====
   return (
     <>
       <section
@@ -167,7 +198,6 @@ export function Hero({
           background: transparent;
         }
 
-        /* CRT overlay (scanlines + vignette + flicker) */
         .hero::before {
           content: "";
           position: absolute;
@@ -225,7 +255,6 @@ export function Hero({
           text-shadow: 0 0 14px rgba(22, 138, 200, 0.35);
         }
 
-        /* ✅ TITULO CAMBIANTE (GRANDE como imagen 2) */
         .title {
           font-size: clamp(4.2rem, 12vw, 9rem);
           line-height: 0.95;
@@ -233,11 +262,7 @@ export function Hero({
           font-weight: 900;
           letter-spacing: 0px;
           text-transform: none;
-
-          /* glow controlado */
           text-shadow: 0 0 14px rgba(22, 138, 200, 0.30);
-
-          /* evita brincos cuando cambia el texto */
           min-height: 1.1em;
         }
 
@@ -286,7 +311,6 @@ export function Hero({
           padding-right: 3rem;
         }
 
-        /* estilo tipo imagen 2 para los iconos */
         .tech-pair {
           display: inline-flex;
           align-items: center;
@@ -313,7 +337,6 @@ export function Hero({
           letter-spacing: 1px;
         }
 
-        /* ===== Theme ===== */
         .hero.dark { color: #ffffff; }
         .hero.dark .hero-inner { background: rgba(0, 0, 0, 0.18); }
         .hero.dark .intro,
@@ -333,24 +356,19 @@ export function Hero({
 
         @media (max-width: 768px) {
           .hero-inner { padding: 2rem 1.2rem; }
-
-          /* ✅ en móvil sigue grande, pero controlado */
           .title {
             font-size: clamp(3rem, 14vw, 5rem);
             line-height: 1;
             min-height: 1.15em;
           }
-
           .description {
             font-size: 1rem;
             padding: 0 0.5rem;
           }
-
           .marquee-group,
           .marquee-track {
             gap: 1.2rem;
           }
-
           .tech-pair {
             font-size: 1.2rem;
             padding: 0.4rem 1rem;
@@ -358,5 +376,299 @@ export function Hero({
         }
       `}</style>
     </>
+  );
+}
+
+// ===== FORMAL MODE HERO =====
+
+interface FormalHeroProps {
+  id?: string;
+  name: string;
+  roles: string[];
+  description: React.ReactNode;
+  tech?: TechIconId[];
+  darkMode: boolean;
+  className?: string;
+  [key: string]: any;
+}
+
+function FormalHero({
+  id = "hero",
+  name,
+  roles,
+  description,
+  tech = [],
+  darkMode,
+  className,
+  ...props
+}: FormalHeroProps) {
+  const [roleIndex, setRoleIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [roles.length]);
+
+  const dark = darkMode;
+
+  return (
+    <>
+      <section
+        id={id}
+        className={cn("formal-hero", className)}
+        data-dark={dark ? "true" : "false"}
+        {...props}
+      >
+        <div className="formal-container">
+          {/* Left: text content */}
+          <motion.div
+            className="formal-content"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="formal-greeting">Software Developer</p>
+
+            <h1 className="formal-name">{name}</h1>
+
+            <div className="formal-role-wrapper">
+              <AnimatedRole key={roleIndex} role={roles[roleIndex] ?? ""} dark={dark} />
+            </div>
+
+            <p className="formal-description">{description}</p>
+
+            <div className="formal-actions">
+              <a href="#projects" className="btn-primary">
+                Ver proyectos
+              </a>
+              <a href="#music" className="btn-secondary">
+                Ver música
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right: tech grid */}
+          <motion.div
+            className="formal-tech"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            <p className="tech-label">Stack tecnológico</p>
+            <div className="tech-grid">
+              {tech.map((techId) => {
+                const Icon = TECH_ICON_MAP[techId];
+                return (
+                  <div key={techId} className="tech-chip" title={TECH_NAMES[techId]}>
+                    <Icon />
+                    <span>{TECH_NAMES[techId]}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <style jsx>{`
+        .formal-hero {
+          min-height: 100vh;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 7rem 2rem 4rem;
+          position: relative;
+          z-index: 1;
+          background: transparent;
+        }
+
+        .formal-container {
+          width: 100%;
+          max-width: 1100px;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4rem;
+          align-items: center;
+          padding: 3rem;
+          border-radius: 20px;
+          backdrop-filter: blur(4px);
+          border: 1px solid ${dark ? "rgba(30,139,198,0.22)" : "rgba(30,139,198,0.18)"};
+          background: ${dark ? "rgba(0,0,0,0.22)" : "rgba(255,255,255,0.55)"};
+          box-shadow: 0 20px 70px ${dark ? "rgba(0,0,0,0.35)" : "rgba(0,0,0,0.10)"};
+        }
+
+        .formal-content {
+          display: flex;
+          flex-direction: column;
+          gap: 1.2rem;
+        }
+
+        .formal-greeting {
+          font-size: 0.85rem;
+          font-weight: 600;
+          letter-spacing: 3px;
+          text-transform: uppercase;
+          color: #1e8bc6;
+          margin: 0;
+        }
+
+        .formal-name {
+          font-size: clamp(2.8rem, 5vw, 4.2rem);
+          font-weight: 800;
+          margin: 0;
+          line-height: 1.1;
+          letter-spacing: -1px;
+          color: ${dark ? "#ffffff" : "#0a0a0a"};
+        }
+
+        .formal-role-wrapper {
+          height: 2.2rem;
+          display: flex;
+          align-items: center;
+        }
+
+        .formal-description {
+          font-size: 1.05rem;
+          line-height: 1.7;
+          margin: 0;
+          opacity: 0.82;
+          max-width: 480px;
+          color: ${dark ? "rgba(255,255,255,0.88)" : "rgba(0,0,0,0.75)"};
+        }
+
+        .formal-actions {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+          margin-top: 0.5rem;
+        }
+
+        .btn-primary {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.7rem 1.6rem;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-decoration: none;
+          background: #1e8bc6;
+          color: #ffffff;
+          transition: background 0.2s, transform 0.15s;
+          border: none;
+        }
+
+        .btn-primary:hover {
+          background: #166fa0;
+          transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+          display: inline-flex;
+          align-items: center;
+          padding: 0.7rem 1.6rem;
+          border-radius: 8px;
+          font-size: 0.95rem;
+          font-weight: 600;
+          text-decoration: none;
+          border: 1.5px solid ${dark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.20)"};
+          color: ${dark ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.8)"};
+          background: transparent;
+          transition: background 0.2s, border-color 0.2s, transform 0.15s;
+        }
+
+        .btn-secondary:hover {
+          background: ${dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.05)"};
+          border-color: #1e8bc6;
+          color: #1e8bc6;
+          transform: translateY(-1px);
+        }
+
+        .formal-tech {
+          display: flex;
+          flex-direction: column;
+          gap: 1.2rem;
+        }
+
+        .tech-label {
+          font-size: 0.80rem;
+          font-weight: 600;
+          letter-spacing: 2.5px;
+          text-transform: uppercase;
+          color: #1e8bc6;
+          margin: 0;
+          opacity: 0.85;
+        }
+
+        .tech-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.7rem;
+        }
+
+        .tech-chip {
+          display: flex;
+          align-items: center;
+          gap: 0.55rem;
+          padding: 0.65rem 0.9rem;
+          border-radius: 10px;
+          font-size: 0.82rem;
+          font-weight: 500;
+          border: 1px solid ${dark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.09)"};
+          background: ${dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)"};
+          color: ${dark ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.80)"};
+          transition: border-color 0.2s, background 0.2s, transform 0.15s;
+          cursor: default;
+        }
+
+        .tech-chip:hover {
+          border-color: #1e8bc6;
+          background: ${dark ? "rgba(30,139,198,0.12)" : "rgba(30,139,198,0.07)"};
+          color: #1e8bc6;
+          transform: translateY(-1px);
+        }
+
+        .tech-chip svg {
+          font-size: 1.15rem;
+          flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+          .formal-container {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+            padding: 2rem 1.5rem;
+          }
+          .formal-name {
+            font-size: clamp(2.2rem, 8vw, 3rem);
+          }
+          .tech-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+      `}</style>
+    </>
+  );
+}
+
+function AnimatedRole({ role, dark }: { role: string; dark: boolean }) {
+  return (
+    <motion.span
+      key={role}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.35 }}
+      style={{
+        fontSize: "1.15rem",
+        fontWeight: 600,
+        color: "#1e8bc6",
+        letterSpacing: "0.3px",
+      }}
+    >
+      {role}
+    </motion.span>
   );
 }

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
 
-import { useTheme } from "@/src/app/components/utils/ThemeContext";
 import ThemeToggle from "@/src/app/components/ThemeToggle";
+import ModeToggle from "@/src/app/components/ModeToggle";
 import { Navbar } from "@/src/app/components/UI/NavBar";
 import ParticlesBackground from "@/src/app/components/UI/ParticlesBackground";
 
@@ -24,7 +24,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             items={[
               { type: "section", id: "hero", label: "Home" },
               { type: "section", id: "projects", label: "Projects" },
-              { type: "section", id: "music", label: "Music" },
+              {
+                type: "dropdown",
+                label: "Music",
+                href: "/music",
+                children: [
+                  { href: "/music", label: "🎵 Dashboard" },
+                  { href: "/music/top-artists", label: "🎤 Top Artists" },
+                  { href: "/music/top-tracks", label: "🎶 Top Tracks" },
+                  { href: "/music/history", label: "📻 History" },
+                  { href: "/music/discover", label: "🎲 Discover" },
+                ],
+              },
             ]}
             socials={[
               { type: "external", href: "https://github.com/tuusuario", label: "GitHub", icon: "github" },
@@ -41,6 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </footer>
 
           <ThemeToggle />
+          <ModeToggle />
         </Providers>
       </body>
     </html>
