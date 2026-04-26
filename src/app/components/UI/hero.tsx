@@ -34,7 +34,7 @@ const terminal = VT323({ subsets: ["latin"], weight: "400" });
 // ── tipos ────────────────────────────────────────────────────────────────────
 export type TechIconId =
   | "node"
-  | "html"
+  | "html"   
   | "css"
   | "javascript"
   | "typescript"
