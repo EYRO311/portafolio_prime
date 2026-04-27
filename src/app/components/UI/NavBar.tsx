@@ -53,8 +53,8 @@ const navbarVariants = cva("sticky top-0 z-[1000] w-full py-4", {
 });
 
 const linkBase =
-  "text-[15px] transition-colors duration-200 hover:text-[#0077cc]";
-const activeLink = "text-[#0077cc] font-extrabold";
+  "text-[15px] transition-colors duration-200 nav-link";
+const activeLink = "nav-link-active";
 
 function SocialIcon({ icon }: { icon: "github" | "linkedin" | "mail" }) {
   if (icon === "github") return <FaGithub />;
@@ -323,7 +323,7 @@ export function Navbar({
     return (
       <a
         className={cn(
-          "text-[18px] ml-4 transition-all duration-200 hover:-translate-y-[1px] hover:text-[#168ac8]",
+          "text-[18px] ml-4 transition-all duration-200 hover:-translate-y-[1px] nav-link",
           theme === "dark" ? "text-white/90" : "text-zinc-900/85"
         )}
         href={item.href}
@@ -363,7 +363,8 @@ export function Navbar({
             className="font-extrabold text-[20px] tracking-[0.5px]"
           >
             <Link
-              className="text-[#1e8bc6d1] no-underline"
+              className="no-underline"
+              style={{ color: "var(--nav-accent)" }}
               href={brand.href ?? "/"}
             >
               {brand.label}

@@ -1,8 +1,48 @@
 @import "tailwindcss";
 
+/* ══════════════════════════════════════════
+   Theme variables — light (default) / dark
+   ══════════════════════════════════════════ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light mode — white / purple */
+  --bg: #f0ebff;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --sidebar-bg: rgba(248, 245, 255, 0.94);
+  --text: #1a1033;
+  --text-muted: rgba(26, 16, 51, 0.62);
+  --text-subtle: rgba(26, 16, 51, 0.35);
+  --accent1: #7c3aed;
+  --accent2: #a855f7;
+  --glitch-a: #9333ea;
+  --glitch-b: #6d28d9;
+  --grad: linear-gradient(135deg, #7c3aed, #a855f7);
+  --bar-grad: linear-gradient(90deg, #7c3aed, #a855f7);
+  --btn-text: #ffffff;
+  --nav-accent: #7c3aed;
+  --grid-line: rgba(124, 58, 237, 0.04);
+  --background: #f0ebff;
+  --foreground: #1a1033;
+}
+
+html.dark {
+  /* Dark mode — cyan / magenta */
+  --bg: #080818;
+  --bg-card: rgba(8, 8, 24, 0.6);
+  --sidebar-bg: rgba(8, 8, 24, 0.9);
+  --text: #e0e0ff;
+  --text-muted: rgba(224, 224, 255, 0.65);
+  --text-subtle: rgba(224, 224, 255, 0.38);
+  --accent1: #00e5ff;
+  --accent2: #ff00cc;
+  --glitch-a: #ff00cc;
+  --glitch-b: #00e5ff;
+  --grad: linear-gradient(135deg, #00e5ff, #0099cc);
+  --bar-grad: linear-gradient(90deg, #00e5ff, #ff00cc);
+  --btn-text: #080818;
+  --nav-accent: #00e5ff;
+  --grid-line: rgba(0, 229, 255, 0.022);
+  --background: #080818;
+  --foreground: #e0e0ff;
 }
 
 @theme inline {
@@ -12,19 +52,35 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── base ── */
 body {
-  background: transparent;
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-html, body {
-  height: 100%;
+html, body { height: 100%; }
+
+/* ── global grid background ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none; z-index: 0;
+}
+
+/* ── nav accent utility (used by NavBar) ── */
+.nav-link-active   { color: var(--nav-accent) !important; font-weight: 800; }
+.nav-link:hover    { color: var(--nav-accent) !important; }
+
+/* ── scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent1) 25%, transparent);
+  border-radius: 10px;
 }

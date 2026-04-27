@@ -21,25 +21,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Navbar
             brand={{ label: "EYRO", href: "/" }}
             items={[
-              { type: "section", id: "hero", label: "Home" },
+              { type: "section", id: "hero",     label: "Home" },
+              { type: "section", id: "skills",   label: "Skills" },
               { type: "section", id: "projects", label: "Projects" },
+              { type: "section", id: "contact",  label: "Contact" },
               {
                 type: "dropdown",
                 label: "Music",
                 href: "/music",
                 children: [
-                  { href: "/music", label: "🎵 Dashboard" },
-                  { href: "/music/top-artists", label: "🎤 Top Artists" },
-                  { href: "/music/top-tracks", label: "🎶 Top Tracks" },
-                  { href: "/music/history", label: "📻 History" },
-                  { href: "/music/discover", label: "🎲 Discover" },
+                  { href: "/music",              label: "🎵 Dashboard" },
+                  { href: "/music/top-artists",  label: "🎤 Top Artists" },
+                  { href: "/music/top-tracks",   label: "🎶 Top Tracks" },
+                  { href: "/music/history",      label: "📻 History" },
+                  { href: "/music/discover",     label: "🎲 Discover" },
                 ],
               },
             ]}
             socials={[
-              { type: "external", href: "https://github.com/tuusuario", label: "GitHub", icon: "github" },
-              { type: "external", href: "https://linkedin.com/in/tuusuario", label: "LinkedIn", icon: "linkedin" },
-              { type: "external", href: "mailto:tuemail@dominio.com", label: "Email", icon: "mail" },
+              { type: "external", href: "https://github.com/EYRO311",                              label: "GitHub",   icon: "github"   },
+              { type: "external", href: "https://linkedin.com/in/emiliano-yahel-ruiz-oropeza",    label: "LinkedIn", icon: "linkedin" },
+              { type: "external", href: "mailto:ruiz.oropeza.emiliano.yahel@gmail.com",            label: "Email",    icon: "mail"     },
             ]}
             spy
           />
