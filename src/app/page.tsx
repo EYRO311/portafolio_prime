@@ -614,7 +614,7 @@ export default function Home() {
               </div>
 
               {/* Certifications with verify links */}
-              <p className="cert-heading">Certifications</p>
+              <p className="cert-heading">Certifications</p>   
               <div className="cert-list">
                 {skills.certifications.map(cert => {
                   const link = Object.entries(CERT_LINKS).find(([key]) => cert.includes(key))?.[1]
