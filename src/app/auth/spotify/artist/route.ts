@@ -3,10 +3,10 @@ import { spotifyGet } from "@/src/app/components/lib/spotify-server";
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id?: string }> }
 ) {
   try {
-    const artistId = params.id;
+    const { id: artistId = '' } = await params;
 
     const [artistRes, albumsRes] = await Promise.all([
       spotifyGet(`/artists/${artistId}`),
