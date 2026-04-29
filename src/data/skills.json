@@ -1,0 +1,19 @@
+{
+  "programming_languages": ["JavaScript (ES6+)", "TypeScript", "Python", "C#", "SQL"],
+  "frontend": ["React", "Next.js", "JavaScript (ES6+)", "TypeScript", "HTML5", "CSS3"],
+  "backend": ["Node.js", "Express.js", "REST APIs", "GraphQL", "WebSockets", "API integrations"],
+  "databases": ["SQL", "MySQL", "SQL Server", "PostgreSQL", "Supabase", "MongoDB", "SQL Views", "Stored Procedures"],
+  "cloud_devops": ["Docker", "AWS S3/Storage", "Supabase", "Git", "GitHub Flow"],
+  "tools": ["Git", "GitHub Flow", "Postman", "Docker", "AWS (S3/Storage)"],
+  "integrations": ["Facturama", "Mercado Pago", "Google APIs", "Google API Gmail/Notifications", "Notion API"],
+  "certifications": [
+    "Introduction to Front-End Development — Meta / Coursera",
+    "HTML and CSS in Depth — Meta / Coursera",
+    "Programming with JavaScript — Meta / Coursera",
+    "The Full Stack — Meta / Coursera",
+    "Version Control (Git) — Meta / Coursera",
+    "Introduction to Back-End Development — Meta / Coursera",
+    "Programming in Python — Meta / Coursera"
+  ],
+  "languages": ["Spanish (Native)", "English (B2 - Intermediate)"]
+}

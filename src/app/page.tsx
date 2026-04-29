@@ -1,6 +1,7 @@
-import fs from 'fs'
-import path from 'path'
 import type { CSSProperties } from 'react'
+import profileJson from '../data/profile.json'
+import projectsJson from '../data/projects.json'
+import skillsJson from '../data/skills.json'
 
 /* ── Types ──────────────────────────────────────────────────────── */
 interface Project {
@@ -39,15 +40,6 @@ interface Skills {
   tools: string[]
   integrations: string[]
   certifications: string[]
-}
-
-/* ── Data loading ───────────────────────────────────────────────── */
-const DATA_DIR = path.join(
-  process.cwd(), '..', 'portafolio_back', 'portfolio-backend', 'src', 'data'
-)
-
-function readJSON<T>(file: string): T {
-  return JSON.parse(fs.readFileSync(path.join(DATA_DIR, file), 'utf-8'))
 }
 
 /* ── Static config ──────────────────────────────────────────────── */
@@ -506,9 +498,9 @@ const CSS = `
 
 /* ── Component ──────────────────────────────────────────────────── */
 export default function Home() {
-  const profile = readJSON<Profile>('profile.json')
-  const { projects } = readJSON<{ projects: Project[] }>('projects.json')
-  const skills = readJSON<Skills>('skills.json')
+  const profile = profileJson as unknown as Profile
+  const { projects } = projectsJson as unknown as { projects: Project[] }
+  const skills = skillsJson as unknown as Skills
 
   const firstName = profile.name.split(' ')[0]
   const shortRole = profile.role.split('|')[0].trim()

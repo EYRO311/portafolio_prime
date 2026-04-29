@@ -1,0 +1,104 @@
+{
+  "name": "Emiliano Yahel Ruiz Oropeza",
+  "role": "Junior Full-Stack Developer | React / Backend / Databases",
+  "location": "Mexico City, MX",
+  "summary": "Junior Full-Stack Developer with experience building dashboards, backend services, database artifacts and API integrations using React/Next.js, TypeScript, Node.js, SQL, MongoDB, Supabase, Docker, GraphQL, WebSockets and third-party services such as Facturama, Mercado Pago, Google APIs and AWS S3/Storage. Focused on practical problem-solving, clean UI implementation, data consistency, financial/operational workflows and collaboration through GitHub workflows, testing and stakeholder communication.",
+  "contact": {
+    "email": "ruiz.oropeza.emiliano.yahel@gmail.com",
+    "phone": "+52 56 3247 3970"
+  },
+  "links": {
+    "linkedin": "https://linkedin.com/in/emiliano-yahel-ruiz-oropeza",
+    "github": "https://github.com/EYRO311"
+  },
+  "technical_focus": [
+    "Frontend dashboards",
+    "Backend APIs",
+    "SQL database design",
+    "Stored procedures and views",
+    "Billing and payment integrations",
+    "Real-time communication",
+    "Cloud storage workflows",
+    "Dockerized development environments"
+  ],
+  "stack_keywords": [
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Node.js",
+    "Express.js",
+    "REST APIs",
+    "GraphQL",
+    "WebSockets",
+    "SQL",
+    "MySQL",
+    "SQL Server",
+    "Supabase",
+    "MongoDB",
+    "Docker",
+    "AWS S3/Storage",
+    "Facturama",
+    "Mercado Pago",
+    "Google APIs",
+    "Notion API"
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Computer Systems Engineering",
+      "institution": "ESCOM IPN",
+      "location": "Mexico City",
+      "start": "2023-02",
+      "end": null
+    },
+    {
+      "degree": "Technical Degree in Programming",
+      "institution": "CECyT 9 IPN",
+      "location": "Mexico City",
+      "start": "2018-01",
+      "end": "2022-12"
+    }
+  ],
+  "experience": [
+    {
+      "title": "IT Systems Intern / Fullstack Developer",
+      "company": "Noktos",
+      "location": "Mexico City",
+      "start": "2025-07",
+      "end": null,
+      "highlights": [
+        "Built and maintained Invoices and Wallet dashboards using Next.js/React with TypeScript aligned with operational and financial workflows.",
+        "Implemented backend services and internal APIs, including billing workflows and Facturama integrations.",
+        "Developed database artifacts including tables, views and stored procedures to support financial modules and improve data consistency.",
+        "Worked with SQL-based persistence, API integrations and AWS S3/Storage for file uploads and reads.",
+        "Used GitHub multi-branch workflows, testing practices and Docker-supported development workflows to reduce regressions.",
+        "Collaborated with operational and financial stakeholders to customize modules and translate business needs into technical deliverables."
+      ]
+    },
+    {
+      "title": "Full Stack Developer",
+      "company": "Dictamigos / Elite Coach",
+      "location": "Mexico City",
+      "start": "2024-06",
+      "end": "2025-01",
+      "highlights": [
+        "Developed a platform for managing clients, schedules, routines, reminders, payments and account status.",
+        "Built a REST API with Node.js/Express and a SQL-backed database for CRUD operations and payment/session reminders.",
+        "Integrated Google APIs for email notifications and Mercado Pago for payment validation and debt/account status workflows.",
+        "Implemented administrative views to compare pending vs paid balances and support operational decision-making."
+      ]
+    },
+    {
+      "title": "Research Assistant / Backend Jr.",
+      "company": "Aerospace Development Center, IPN",
+      "location": "Mexico City",
+      "start": "2021-09",
+      "end": "2022-04",
+      "highlights": [
+        "Co-authored a Springer publication on satellite imagery analysis.",
+        "Developed Python-based search algorithms and supported neural network work for satellite image analysis.",
+        "Modeled and implemented a database for laboratory inventory, warehouse control and lending control.",
+        "Supported backend logic for tracking instruments, materials and loan status."
+      ]
+    }
+  ]
+}

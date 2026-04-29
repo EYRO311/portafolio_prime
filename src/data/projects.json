@@ -1,0 +1,40 @@
+{
+  "projects": [
+    {
+      "slug": "noktos-invoices-wallet-dashboards",
+      "title": "Noktos — Invoices & Wallet Dashboards",
+      "description": "User-facing dashboards aligned with operational and financial workflows. Backend services and internal APIs with billing modules and Facturama integration; persistence via AWS S3/Storage.",
+      "stack": ["Next.js", "React", "TypeScript", "Node.js", "MySQL", "AWS S3", "Facturama"],
+      "repo": "",
+      "live": "",
+      "type": "work"
+    },
+    {
+      "slug": "dictamigos-elite-coach-platform",
+      "title": "Dictamigos / Elite Coach — Client Management Platform",
+      "description": "Platform to manage clients, schedules, routines, reminders and payments. REST API built from scratch with Node.js/Express and SQL database; Google API email notifications; Mercado Pago validation.",
+      "stack": ["React", "Node.js", "Express", "SQL", "Google APIs", "Mercado Pago"],
+      "repo": "",
+      "live": "",
+      "type": "work"
+    },
+    {
+      "slug": "hacktion-2024-notion-rest-api",
+      "title": "Hacktion 2024 (Notion) — REST API Integration",
+      "description": "REST API with Node.js/Express to connect Git with Notion, including secure token handling and endpoint validation.",
+      "stack": ["Node.js", "Express", "REST API", "Notion API"],
+      "repo": "",
+      "live": "",
+      "type": "project"
+    },
+    {
+      "slug": "web-dev-instructor-fes-acatlan",
+      "title": "Instructor — Web Development Fundamentals",
+      "description": "Delivered a web development course covering HTML/JavaScript/CSS and API consumption fundamentals.",
+      "stack": ["HTML", "CSS", "JavaScript", "APIs"],
+      "repo": "",
+      "live": "",
+      "type": "teaching"
+    }
+  ]
+}
