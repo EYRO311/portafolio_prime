@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Track = {
@@ -20,7 +20,7 @@ type ApiResponse = {
   tracks: Track[];
 };
 
-export default function DiscoverPage() {
+function DiscoverContent() {
   const searchParams = useSearchParams();
   const seedTrack = searchParams.get("seed_track");
   const seedArtist = searchParams.get("seed_artist");
@@ -83,11 +83,7 @@ export default function DiscoverPage() {
           <article key={track.id} className="border rounded-2xl p-4 flex gap-4 items-center">
             <div className="w-16 h-16 rounded-lg overflow-hidden border shrink-0">
               {track.image ? (
-                <img
-                  src={track.image}
-                  alt={track.name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={track.image} alt={track.name} className="w-full h-full object-cover" />
               ) : null}
             </div>
 
@@ -98,12 +94,7 @@ export default function DiscoverPage() {
             </div>
 
             {track.spotifyUrl ? (
-              <a
-                href={track.spotifyUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm underline"
-              >
+              <a href={track.spotifyUrl} target="_blank" rel="noreferrer" className="text-sm underline">
                 Abrir
               </a>
             ) : null}
@@ -111,5 +102,13 @@ export default function DiscoverPage() {
         ))}
       </div>
     </main>
+  );
+}
+
+export default function DiscoverPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen p-6 max-w-5xl mx-auto"><p>Cargando...</p></main>}>
+      <DiscoverContent />
+    </Suspense>
   );
 }
