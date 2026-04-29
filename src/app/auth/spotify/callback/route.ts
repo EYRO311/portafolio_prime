@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   const code = searchParams.get('code')
   const returnedState = searchParams.get('state')
   const error = searchParams.get('error')
-
+    
   if (error) {
     return NextResponse.redirect(
       new URL(`/?error=${encodeURIComponent(error)}`, req.url)
