@@ -4,13 +4,29 @@ import { cookies } from 'next/headers'
 export async function GET(req: NextRequest) {
   const clientId = process.env.SPOTIFY_CLIENT_ID
   const redirectUri = process.env.SPOTIFY_REDIRECT_URI
+  
+  console.log('SPOTIFY_CLIENT_ID:', clientId, 'SPOTIFY_REDIRECT_URI:', redirectUri)
 
-  if (!clientId || !redirectUri) {
+  if ( !clientId && !redirectUri) {
     return NextResponse.json(
-      { error: 'Faltan variables de entorno de Spotify' },
+      { error: 'Faltan variables de entorno de Spotifyclient id' },
       { status: 500 }
     )
   }
+  if ( !redirectUri) {
+    return NextResponse.json(
+      { error: 'Faltan variables de entorno de Spotify uri' },
+      { status: 500 }
+    )
+  }
+
+  if ( !clientId) {
+    return NextResponse.json(
+      { error: 'Faltan variables de entorno de Spotifyclient id' },
+      { status: 500 }
+    )
+  }
+
 
   const { searchParams } = new URL(req.url)
   const code = searchParams.get('code')
