@@ -62,11 +62,24 @@ export async function GET() {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
 
-  if (!clientId || !redirectUri) {
+  if ( !clientId && !redirectUri) {
     return NextResponse.json(
-      { error: "Faltan variables de entorno de Spotify" },
+      { error: 'Faltan variables de entorno de Spotifyclient id' },
       { status: 500 }
-    );
+    )
+  }
+  if ( !redirectUri) {
+    return NextResponse.json(
+      { error: 'Faltan variables de entorno de Spotify uri' },
+      { status: 500 }
+    )
+  }
+
+  if ( !clientId) {
+    return NextResponse.json(
+      { error: 'Faltan variables de entorno de Spotifyclient id' },
+      { status: 500 }
+    )
   }
 
   const state = generateRandomString(16);
