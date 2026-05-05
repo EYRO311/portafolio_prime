@@ -31,7 +31,17 @@ export async function GET(req: NextRequest) {
   const codeVerifier = cookieStore.get('spotify_code_verifier')?.value
 
   if (!code || !returnedState || !savedState || returnedState !== savedState) {
-    return NextResponse.json({ error: 'State inválido' }, { status: 400 })
+    return NextResponse.json({
+      error: 'State inválido',
+      debug: {
+        codeExists: !!code,
+        returnedState,
+        savedState: savedState ?? null,
+        codeVerifierExists: !!codeVerifier,
+        allCookies: cookieStore.getAll().map(c => c.name),
+        statesMatch: returnedState === savedState,
+      }
+    }, { status: 400 })
   }
 
   if (!codeVerifier) {
