@@ -479,7 +479,7 @@ const CSS = `
   .footer-links a { color: var(--text-subtle); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--accent1); }
 
-  /* ── responsive ── */
+  /* ── responsive tablet ── */
   @media (max-width: 900px) {
     main { padding-left: 0; }
     .sidebar {
@@ -493,6 +493,23 @@ const CSS = `
     .hr { margin-left: 0; }
     .page-footer { padding: 2rem 1.5rem; margin: 0; }
     .s1,.s2,.s3,.s4 { display: none; }
+  }
+
+  /* ── responsive mobile ── */
+  @media (max-width: 480px) {
+    .section { padding: 4rem 1rem 8rem; }
+    .glitch-name { font-size: clamp(2.6rem, 14vw, 3.8rem); letter-spacing: -1px; }
+    .hero-hi { font-size: 1.1rem; }
+    .hero-role { font-size: 0.9rem; }
+    .hero-desc { font-size: 0.92rem; }
+    .hero-cta { flex-direction: column; gap: 0.65rem; }
+    .btn-p, .btn-s { text-align: center; justify-content: center; width: 100%; }
+    .sec-h2 { font-size: clamp(1.7rem, 8vw, 2.2rem); }
+    .proj-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .cert-card { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .page-footer { flex-direction: column; align-items: flex-start; gap: 0.75rem; font-size: 0.75rem; }
+    .sidebar { gap: 0.65rem; padding: 0.6rem 1rem; }
   }
 `
 

@@ -11,6 +11,25 @@ import { FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa";
 
 import { useTheme } from "@/src/app/components/utils/ThemeContext";
 
+function HamburgerIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <line x1="3" y1="7" x2="21" y2="7"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="17" x2="21" y2="17"/>
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  );
+}
+
 type DropdownChild = {
   href: string;
   label: string;
@@ -89,6 +108,11 @@ export function Navbar({
 
   const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
   const closeTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   const handleDropdownEnter = (label: string) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -337,6 +361,13 @@ export function Navbar({
     );
   };
 
+  const mobileMenuBg = theme === "dark"
+    ? "rgba(8,8,24,0.97)"
+    : "rgba(255,255,255,0.98)";
+  const mobileMenuBorder = theme === "dark"
+    ? "1px solid rgba(255,255,255,0.10)"
+    : "1px solid rgba(0,0,0,0.08)";
+
   return (
     <nav className={cn(navbarVariants({ density }), className)} {...props}>
       <div
@@ -350,7 +381,7 @@ export function Navbar({
       >
         <div
           className={cn(
-            "w-full rounded-[48px] px-8 py-4 flex items-center justify-between gap-6 border",
+            "w-full rounded-[48px] px-4 md:px-8 py-4 flex items-center justify-between gap-6 border",
             theme === "dark"
               ? "bg-black/45 border-white/15 text-white"
               : "bg-white/70 border-black/15 text-zinc-900"
@@ -386,16 +417,194 @@ export function Navbar({
               </React.Fragment>
             ))}
           </div>
-        </div>
-      </div>
 
-      <style jsx>{`
-        @media (max-width: 768px) {
-          nav {
-            display: none;
-          }
-        }
-      `}</style>
+          {/* Hamburger button — mobile only */}
+          <button
+            className="flex md:hidden items-center justify-center w-9 h-9 rounded-lg border-0 cursor-pointer transition-colors"
+            style={{
+              color: "var(--nav-accent)",
+              background: "transparent",
+            }}
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <CloseIcon /> : <HamburgerIcon />}
+          </button>
+        </div>
+
+        {/* Mobile dropdown menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18 }}
+              style={{
+                marginTop: "8px",
+                borderRadius: "20px",
+                padding: "12px 8px",
+                border: mobileMenuBorder,
+                background: mobileMenuBg,
+                backdropFilter: "blur(16px)",
+                boxShadow: "0 8px 30px rgba(0,0,0,0.28)",
+              }}
+            >
+              {items.map((item, idx) => {
+                if (item.type === "section") {
+                  const href = isHome ? `#${item.id}` : `/#${item.id}`;
+                  const isActive = isHome && activeSection === item.id;
+                  return (
+                    <a
+                      key={idx}
+                      href={href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      style={{
+                        display: "block",
+                        padding: "10px 16px",
+                        borderRadius: "12px",
+                        fontSize: "15px",
+                        fontWeight: isActive ? 700 : 500,
+                        color: isActive
+                          ? "var(--nav-accent)"
+                          : theme === "dark"
+                          ? "rgba(255,255,255,0.88)"
+                          : "rgba(0,0,0,0.80)",
+                        textDecoration: "none",
+                        background: isActive
+                          ? theme === "dark"
+                            ? "rgba(0,229,255,0.08)"
+                            : "rgba(124,58,237,0.06)"
+                          : "transparent",
+                        transition: "background 0.15s",
+                      }}
+                    >
+                      {item.label}
+                    </a>
+                  );
+                }
+                if (item.type === "route") {
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={idx}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      style={{
+                        display: "block",
+                        padding: "10px 16px",
+                        borderRadius: "12px",
+                        fontSize: "15px",
+                        fontWeight: isActive ? 700 : 500,
+                        color: isActive
+                          ? "var(--nav-accent)"
+                          : theme === "dark"
+                          ? "rgba(255,255,255,0.88)"
+                          : "rgba(0,0,0,0.80)",
+                        textDecoration: "none",
+                        background: isActive
+                          ? theme === "dark"
+                            ? "rgba(0,229,255,0.08)"
+                            : "rgba(124,58,237,0.06)"
+                          : "transparent",
+                      }}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
+                if (item.type === "dropdown") {
+                  const isActive = item.children.some((c) => pathname.startsWith(c.href)) ||
+                    !!(item.href && pathname.startsWith(item.href));
+                  return (
+                    <div key={idx}>
+                      <p
+                        style={{
+                          padding: "10px 16px 4px",
+                          fontSize: "11px",
+                          fontWeight: 800,
+                          letterSpacing: "2px",
+                          textTransform: "uppercase",
+                          color: isActive ? "var(--nav-accent)" : theme === "dark" ? "rgba(255,255,255,0.38)" : "rgba(0,0,0,0.35)",
+                          margin: 0,
+                        }}
+                      >
+                        {item.label}
+                      </p>
+                      {item.children.map((child) => {
+                        const childActive = pathname === child.href || pathname.startsWith(child.href + "/");
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            style={{
+                              display: "block",
+                              padding: "9px 16px 9px 28px",
+                              borderRadius: "10px",
+                              fontSize: "14px",
+                              fontWeight: childActive ? 700 : 400,
+                              color: childActive
+                                ? "var(--nav-accent)"
+                                : theme === "dark"
+                                ? "rgba(255,255,255,0.75)"
+                                : "rgba(0,0,0,0.65)",
+                              textDecoration: "none",
+                              background: childActive
+                                ? theme === "dark"
+                                  ? "rgba(0,229,255,0.08)"
+                                  : "rgba(124,58,237,0.06)"
+                                : "transparent",
+                            }}
+                          >
+                            {child.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  );
+                }
+                return null;
+              })}
+
+              {/* Socials in mobile menu */}
+              {socials.length > 0 && (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    padding: "12px 16px 4px",
+                    borderTop: theme === "dark"
+                      ? "1px solid rgba(255,255,255,0.07)"
+                      : "1px solid rgba(0,0,0,0.06)",
+                    marginTop: "8px",
+                  }}
+                >
+                  {socials.map((s, idx) => {
+                    if (s.type !== "external") return null;
+                    return (
+                      <a
+                        key={idx}
+                        href={s.href}
+                        target={s.href.startsWith("mailto:") ? undefined : "_blank"}
+                        rel="noreferrer"
+                        aria-label={s.label}
+                        style={{
+                          fontSize: "20px",
+                          color: theme === "dark" ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)",
+                          transition: "color 0.2s",
+                        }}
+                      >
+                        {s.icon && <SocialIcon icon={s.icon} />}
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </nav>
   );
 }

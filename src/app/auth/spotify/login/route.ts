@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import {
   createCodeChallenge,
   generateRandomString,
@@ -40,14 +39,22 @@ export async function GET() {
     show_dialog: "true",
   });
 
-  const cookieStore = await cookies();
+  const spotifyUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
 
-  cookieStore.delete("spotify_access_token");
-  cookieStore.delete("spotify_refresh_token");
-  cookieStore.delete("spotify_user_id");
-  cookieStore.delete("spotify_user_name");
+  // Devuelve 200 con HTML redirect para que Set-Cookie funcione en Vercel.
+  // Los redirects 302 con cookies son filtrados por el edge de Vercel/Next.js.
+  const html = `<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=${spotifyUrl}"></head><body></body></html>`;
 
-  cookieStore.set("spotify_state", state, {
+  const response = new NextResponse(html, {
+    headers: { 'Content-Type': 'text/html' },
+  });
+
+  response.cookies.delete("spotify_access_token");
+  response.cookies.delete("spotify_refresh_token");
+  response.cookies.delete("spotify_user_id");
+  response.cookies.delete("spotify_user_name");
+
+  response.cookies.set("spotify_state", state, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
@@ -55,7 +62,7 @@ export async function GET() {
     maxAge: 60 * 10,
   });
 
-  cookieStore.set("spotify_code_verifier", codeVerifier, {
+  response.cookies.set("spotify_code_verifier", codeVerifier, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
@@ -63,7 +70,5 @@ export async function GET() {
     maxAge: 60 * 10,
   });
 
-  return NextResponse.redirect(
-    `https://accounts.spotify.com/authorize?${params.toString()}`
-  );
+  return response;
 }
