@@ -82,20 +82,24 @@ export async function getSpotifyAccessToken() {
   }
 }
 
-export async function spotifyGet(path: string) {
+async function spotifyRequest(method: string, path: string, body?: object) {
   let accessToken = await getSpotifyAccessToken();
 
   if (!accessToken) {
     return { ok: false, status: 401, data: { error: "No autenticado" } };
   }
 
-  let res = await fetch(`${SPOTIFY_API}${path}`, {
+  const buildInit = (token: string): RequestInit => ({
+    method,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
+      ...(body ? { "Content-Type": "application/json" } : {}),
     },
+    body: body ? JSON.stringify(body) : undefined,
     cache: "no-store",
   });
 
+  let res = await fetch(`${SPOTIFY_API}${path}`, buildInit(accessToken));
   let data = await readJson(res);
 
   if (res.status === 401) {
@@ -107,23 +111,16 @@ export async function spotifyGet(path: string) {
     }
 
     accessToken = await refreshSpotifyAccessToken(refreshToken);
-
-    res = await fetch(`${SPOTIFY_API}${path}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
-
+    res = await fetch(`${SPOTIFY_API}${path}`, buildInit(accessToken));
     data = await readJson(res);
   }
 
-  return {
-    ok: res.ok,
-    status: res.status,
-    data,
-  };
+  return { ok: res.ok, status: res.status, data };
 }
+
+export const spotifyGet = (path: string) => spotifyRequest("GET", path);
+export const spotifyPut = (path: string, body?: object) => spotifyRequest("PUT", path, body);
+export const spotifyPost = (path: string, body?: object) => spotifyRequest("POST", path, body);
 
 export function mapTrack(track: any) {
   return {

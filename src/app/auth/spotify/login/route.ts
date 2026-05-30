@@ -30,6 +30,7 @@ export async function GET() {
       "user-read-recently-played",
       "user-read-playback-state",
       "user-read-currently-playing",
+      "user-modify-playback-state",
       "playlist-read-private",
       "playlist-read-collaborative",
     ].join(" "),

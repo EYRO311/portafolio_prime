@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useTheme } from "@/src/app/components/utils/ThemeContext";
+import SpotifyPlayer from "@/src/app/components/music/SpotifyPlayer";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -259,6 +260,8 @@ export default function MusicClient() {
 
   return (
     <div className="space-y-8">
+      <SpotifyPlayer />
+
       {/* Control section */}
       <section className="rounded-3xl p-6" style={card}>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

@@ -35,6 +35,24 @@
       "repo": "",
       "live": "",
       "type": "teaching"
+    },
+    {
+      "slug": "quiniela-supabase-vercel",
+      "title": "Quiniela — Sports Prediction App",
+      "description": "Full-stack sports quiniela app where users can register, make match predictions and track standings in real time. Backend powered by Supabase (PostgreSQL + Auth + Realtime) and deployed on Vercel.",
+      "stack": ["Next.js", "React", "TypeScript", "Supabase", "PostgreSQL", "Vercel"],
+      "repo": "",
+      "live": "https://quiniela-front-ten.vercel.app/",
+      "type": "project"
+    },
+    {
+      "slug": "spotify-music-dashboard",
+      "title": "Spotify Music Dashboard",
+      "description": "Personal music analytics dashboard integrated with the Spotify API. Displays top artists, top tracks, recently played history, playlists and currently playing track — all with time-range filters and OAuth login.",
+      "stack": ["Next.js", "TypeScript", "Spotify API", "OAuth 2.0", "REST API"],
+      "repo": "",
+      "live": "/music",
+      "type": "project"
     }
   ]
 }
