@@ -1,46 +1,7 @@
 import type { CSSProperties } from 'react'
-import profileJson from '../data/profile.json'
-import projectsJson from '../data/projects.json'
-import skillsJson from '../data/skills.json'
-
-/* ── Types ──────────────────────────────────────────────────────── */
-interface Project {
-  slug: string
-  title: string
-  description: string
-  stack: string[]
-  repo: string
-  live: string
-  type: string
-}
-
-interface Profile {
-  name: string
-  role: string
-  summary: string
-  contact: { email: string; phone: string }
-  links: { linkedin: string; github: string }
-  stack_keywords: string[]
-  experience: Array<{
-    title: string; company: string; location: string
-    start: string; end: string | null; highlights: string[]
-  }>
-  education: Array<{
-    degree: string; institution: string; location: string
-    start: string; end: string | null
-  }>
-}
-
-interface Skills {
-  programming_languages: string[]
-  frontend: string[]
-  backend: string[]
-  databases: string[]
-  cloud_devops: string[]
-  tools: string[]
-  integrations: string[]
-  certifications: string[]
-}
+import { getProfile } from '@/src/lib/data/profile'
+import { getProjects } from '@/src/lib/data/projects'
+import { getSkills } from '@/src/lib/data/skills'
 
 /* ── Static config ──────────────────────────────────────────────── */
 const SKILL_BARS = [
@@ -514,10 +475,12 @@ const CSS = `
 `
 
 /* ── Component ──────────────────────────────────────────────────── */
-export default function Home() {
-  const profile = profileJson as unknown as Profile
-  const { projects } = projectsJson as unknown as { projects: Project[] }
-  const skills = skillsJson as unknown as Skills
+export default async function Home() {
+  const [profile, projects, skills] = await Promise.all([
+    getProfile(),
+    getProjects(),
+    getSkills(),
+  ])
 
   const firstName = profile.name.split(' ')[0]
   const shortRole = profile.role.split('|')[0].trim()
