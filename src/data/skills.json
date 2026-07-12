@@ -1,11 +1,11 @@
 {
-  "programming_languages": ["JavaScript (ES6+)", "TypeScript", "Python", "C#", "SQL"],
-  "frontend": ["React", "Next.js", "JavaScript (ES6+)", "TypeScript", "HTML5", "CSS3"],
-  "backend": ["Node.js", "Express.js", "REST APIs", "GraphQL", "WebSockets", "API integrations"],
-  "databases": ["SQL", "MySQL", "SQL Server", "PostgreSQL", "Supabase", "MongoDB", "SQL Views", "Stored Procedures"],
-  "cloud_devops": ["Docker", "AWS S3/Storage", "Supabase", "Git", "GitHub Flow"],
-  "tools": ["Git", "GitHub Flow", "Postman", "Docker", "AWS (S3/Storage)"],
-  "integrations": ["Facturama", "Mercado Pago", "Google APIs", "Google API Gmail/Notifications", "Notion API"],
+  "programming_languages": ["JavaScript (ES6+)", "TypeScript", "Python", "PHP", "C#", "Java", "SQL"],
+  "frontend": ["React", "Next.js", "React Native", "Angular", "JavaScript (ES6+)", "TypeScript", "HTML5", "CSS3"],
+  "backend": ["Node.js", "Express.js", "Prisma ORM", "REST APIs", "GraphQL", "WebSockets", "API integrations"],
+  "databases": ["SQL", "MySQL", "SQL Server", "PostgreSQL", "Supabase", "MongoDB", "SQL Views", "Stored Procedures", "SQL Workbench / MySQL Workbench"],
+  "cloud_devops": ["Docker", "Kubernetes", "CI/CD", "DigitalOcean", "AWS S3/Storage", "Supabase", "Git", "GitHub Flow"],
+  "tools": ["Git", "GitHub Flow", "Postman", "Docker", "AWS (S3/Storage)", "Google Earth Engine"],
+  "integrations": ["Facturama", "Mercado Pago", "Google APIs", "Google API Gmail/Notifications", "Google Maps API", "Notion API"],
   "certifications": [
     "Introduction to Front-End Development — Meta / Coursera",
     "HTML and CSS in Depth — Meta / Coursera",

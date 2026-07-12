@@ -31,14 +31,17 @@ async function seedProfile() {
   const { error: profileError } = await supabase.from("profile").upsert({
     id: 1,
     name: profile.name,
-    role: profile.role,
+    role_en: profile.role.en,
+    role_es: profile.role.es,
     location: profile.location,
-    summary: profile.summary,
+    summary_en: profile.summary.en,
+    summary_es: profile.summary.es,
     email: profile.contact.email,
     phone: profile.contact.phone,
     linkedin: profile.links.linkedin,
     github: profile.links.github,
-    technical_focus: profile.technical_focus ?? [],
+    technical_focus_en: profile.technical_focus.en ?? [],
+    technical_focus_es: profile.technical_focus.es ?? [],
     stack_keywords: profile.stack_keywords ?? [],
   });
   if (profileError) throw profileError;
@@ -46,7 +49,8 @@ async function seedProfile() {
 
   await supabase.from("education").delete().not("id", "is", null);
   const educationRows = (profile.education ?? []).map((e, i) => ({
-    degree: e.degree,
+    degree_en: e.degree.en,
+    degree_es: e.degree.es,
     institution: e.institution,
     location: e.location,
     start_date: e.start,
@@ -61,12 +65,15 @@ async function seedProfile() {
 
   await supabase.from("experience").delete().not("id", "is", null);
   const experienceRows = (profile.experience ?? []).map((e, i) => ({
-    title: e.title,
+    title_en: e.title.en,
+    title_es: e.title.es,
     company: e.company,
     location: e.location,
     start_date: e.start,
     end_date: e.end,
-    highlights: e.highlights ?? [],
+    featured: e.featured ?? true,
+    highlights_en: e.highlights.en ?? [],
+    highlights_es: e.highlights.es ?? [],
     sort_order: i,
   }));
   if (experienceRows.length) {
@@ -82,8 +89,10 @@ async function seedProjects() {
   await supabase.from("projects").delete().not("id", "is", null);
   const rows = projects.map((p, i) => ({
     slug: p.slug,
-    title: p.title,
-    description: p.description,
+    title_en: p.title.en,
+    title_es: p.title.es,
+    description_en: p.description.en,
+    description_es: p.description.es,
     stack: p.stack ?? [],
     repo: p.repo ?? "",
     live: p.live ?? "",

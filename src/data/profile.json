@@ -1,8 +1,14 @@
 {
   "name": "Emiliano Yahel Ruiz Oropeza",
-  "role": "Junior Full-Stack Developer | React / Backend / Databases",
+  "role": {
+    "en": "Full-Stack Developer | Node.js, React, Databases",
+    "es": "Desarrollador Full Stack | Node.js, React, Bases de Datos"
+  },
   "location": "Mexico City, MX",
-  "summary": "Junior Full-Stack Developer with experience building dashboards, backend services, database artifacts and API integrations using React/Next.js, TypeScript, Node.js, SQL, MongoDB, Supabase, Docker, GraphQL, WebSockets and third-party services such as Facturama, Mercado Pago, Google APIs and AWS S3/Storage. Focused on practical problem-solving, clean UI implementation, data consistency, financial/operational workflows and collaboration through GitHub workflows, testing and stakeholder communication.",
+  "summary": {
+    "en": "Computer Systems Engineering student with Fullstack and Backend Jr. experience building web systems, REST APIs, SQL/NoSQL databases, third-party integrations, dashboards, maps, user/role management, inventory systems, Docker and cloud deployments. Has worked with Node.js, Express, React, Next.js, TypeScript, Python, PHP, PostgreSQL, MySQL, MongoDB, Prisma ORM, DigitalOcean and AWS S3.",
+    "es": "Estudiante de Ingeniería en Sistemas Computacionales con experiencia Fullstack y Backend Jr. en desarrollo de sistemas web, APIs REST, bases de datos SQL/NoSQL, integraciones externas, dashboards, mapas, control de usuarios, roles, inventarios, Docker y despliegue cloud. Ha trabajado con Node.js, Express, React, Next.js, TypeScript, Python, PHP, PostgreSQL, MySQL, MongoDB, Prisma ORM, DigitalOcean y AWS S3."
+  },
   "contact": {
     "email": "ruiz.oropeza.emiliano.yahel@gmail.com",
     "phone": "+52 56 3247 3970"
@@ -11,16 +17,26 @@
     "linkedin": "https://linkedin.com/in/emiliano-yahel-ruiz-oropeza",
     "github": "https://github.com/EYRO311"
   },
-  "technical_focus": [
-    "Frontend dashboards",
-    "Backend APIs",
-    "SQL database design",
-    "Stored procedures and views",
-    "Billing and payment integrations",
-    "Real-time communication",
-    "Cloud storage workflows",
-    "Dockerized development environments"
-  ],
+  "technical_focus": {
+    "en": [
+      "Full-stack web development",
+      "Backend systems & internal tools",
+      "REST API integrations",
+      "SQL & NoSQL database design",
+      "Cloud deployments & Docker",
+      "DOOH & map-based systems",
+      "Applied data/ML research"
+    ],
+    "es": [
+      "Desarrollo web full-stack",
+      "Sistemas backend y herramientas internas",
+      "Integraciones de APIs REST",
+      "Diseño de bases de datos SQL y NoSQL",
+      "Despliegues cloud y Docker",
+      "Sistemas DOOH y basados en mapas",
+      "Investigación aplicada en datos/ML"
+    ]
+  },
   "stack_keywords": [
     "React",
     "Next.js",
@@ -28,30 +44,42 @@
     "Node.js",
     "Express.js",
     "REST APIs",
-    "GraphQL",
-    "WebSockets",
+    "PHP",
+    "Python",
+    "Prisma ORM",
     "SQL",
     "MySQL",
+    "PostgreSQL",
     "SQL Server",
-    "Supabase",
     "MongoDB",
+    "Supabase",
     "Docker",
+    "Kubernetes",
+    "CI/CD",
+    "DigitalOcean",
     "AWS S3/Storage",
     "Facturama",
     "Mercado Pago",
+    "Google Maps API",
     "Google APIs",
     "Notion API"
   ],
   "education": [
     {
-      "degree": "B.S. in Computer Systems Engineering",
+      "degree": {
+        "en": "B.S. in Computer Systems Engineering",
+        "es": "Ingeniería en Sistemas Computacionales"
+      },
       "institution": "ESCOM IPN",
       "location": "Mexico City",
       "start": "2023-02",
       "end": null
     },
     {
-      "degree": "Technical Degree in Programming",
+      "degree": {
+        "en": "Technical Degree in Programming",
+        "es": "Técnico en Programación"
+      },
       "institution": "CECyT 9 IPN",
       "location": "Mexico City",
       "start": "2018-01",
@@ -60,45 +88,187 @@
   ],
   "experience": [
     {
-      "title": "Fullstack Developer",
-      "company": "Noktos",
-      "location": "Mexico City",
-      "start": "2025-07",
+      "company": "Adavailable",
+      "location": "Mexico City / Remote",
+      "start": "2026-06",
       "end": null,
-      "highlights": [
-        "Built and maintained Invoices and Wallet dashboards using Next.js/React with TypeScript aligned with operational and financial workflows.",
-        "Implemented backend services and internal APIs, including billing workflows and Facturama integrations.",
-        "Developed database artifacts including tables, views and stored procedures to support financial modules and improve data consistency.",
-        "Worked with SQL-based persistence, API integrations and AWS S3/Storage for file uploads and reads.",
-        "Used GitHub multi-branch workflows, testing practices and Docker-supported development workflows to reduce regressions.",
-        "Collaborated with operational and financial stakeholders to customize modules and translate business needs into technical deliverables."
-      ]
+      "featured": true,
+      "title": {
+        "en": "Fullstack Web Developer",
+        "es": "Desarrollador Web Fullstack"
+      },
+      "highlights": {
+        "en": [
+          "Contributed to a DOOH (Digital Out-of-Home) operations web system integrating maps for operational tracking.",
+          "Implemented user, role and permission management to control access within the system.",
+          "Built inventory administration and usage-control modules connected to PostgreSQL.",
+          "Used Prisma ORM and SQL Workbench / MySQL Workbench for querying, modeling and data support.",
+          "Worked with Docker and DigitalOcean for configuration, deployment and support of web services.",
+          "Worked with PHP, Python and web technologies to maintain and extend system functionality."
+        ],
+        "es": [
+          "Participó en el desarrollo de un sistema web orientado a operaciones DOOH, integrando mapas para control y seguimiento operativo.",
+          "Implementó funcionalidades de control de usuarios, roles y permisos para administrar accesos dentro del sistema.",
+          "Desarrolló módulos de administración de inventario y control de uso conectados a PostgreSQL.",
+          "Utilizó Prisma ORM y SQL Workbench / MySQL Workbench para consulta, modelado y soporte de datos operativos.",
+          "Colaboró con Docker y DigitalOcean para configuración, despliegue y soporte de servicios web.",
+          "Trabajó con PHP, Python y tecnologías web para mantener y desarrollar funcionalidades del sistema."
+        ]
+      }
     },
     {
-      "title": "Full Stack Developer",
+      "company": "Noktos",
+      "location": "Mexico City",
+      "start": "2025-06",
+      "end": "2026-06",
+      "featured": true,
+      "title": {
+        "en": "Fullstack Developer",
+        "es": "Desarrollador Fullstack"
+      },
+      "highlights": {
+        "en": [
+          "Developed fullstack features with Node.js, TypeScript and Next.js for financial and operational modules.",
+          "Built Invoices and Wallet dashboards, including usage statistics for users and the company.",
+          "Implemented billing backend and integrations with Facturama, Google Maps API and email notification services.",
+          "Maintained and evolved MySQL databases through tables, views and stored procedures.",
+          "Handled file reads and uploads on AWS S3/Storage for online persistence.",
+          "Collaborated using GitHub Flow, multi-branch workflows and testing to reduce regressions."
+        ],
+        "es": [
+          "Desarrolló funcionalidades fullstack con Node.js, TypeScript y Next.js para módulos financieros y operativos.",
+          "Construyó dashboards de Facturas y Wallet, integrando estadísticas para usuarios y empresa.",
+          "Implementó backend para facturación e integraciones con Facturama, Google Maps API y servicios de correo.",
+          "Mantuvo y evolucionó bases de datos MySQL mediante tablas, vistas y stored procedures.",
+          "Gestionó lectura y carga de archivos en AWS S3/Storage para persistencia en línea.",
+          "Colaboró con GitHub Flow, ramas y pruebas para reducir regresiones en módulos existentes."
+        ]
+      }
+    },
+    {
+      "company": "Neteaching",
+      "location": "Remote",
+      "start": "2025-01",
+      "end": "2025-07",
+      "featured": true,
+      "title": {
+        "en": "Backend Jr. — Freelance / Collaboration",
+        "es": "Backend Jr. — Freelance / Colaboración"
+      },
+      "highlights": {
+        "en": [
+          "Supported backend development with Node.js and Express as a Backend Jr.",
+          "Helped set up and configure development environments with Docker.",
+          "Contributed to frontend and backend project structure to organize development.",
+          "Built React components to support feature development.",
+          "Designed and developed non-relational databases using MongoDB.",
+          "Participated in integrating frontend, backend and database layers to keep data flowing consistently."
+        ],
+        "es": [
+          "Apoyó como Backend Jr. en el desarrollo backend con Node.js y Express.",
+          "Colaboró en la configuración y levantamiento de entornos con Docker.",
+          "Participó en la estructura de frontend y backend para organizar el desarrollo del sistema.",
+          "Desarrolló componentes en React para apoyar la construcción de funcionalidades del proyecto.",
+          "Diseñó y desarrolló bases de datos no relacionales utilizando MongoDB.",
+          "Participó en tareas de integración entre frontend, backend y base de datos para mantener el flujo de información."
+        ]
+      }
+    },
+    {
       "company": "Dictamigos / Elite Coach",
       "location": "Mexico City",
       "start": "2024-06",
       "end": "2025-01",
-      "highlights": [
-        "Developed a platform for managing clients, schedules, routines, reminders, payments and account status.",
-        "Built a REST API with Node.js/Express and a SQL-backed database for CRUD operations and payment/session reminders.",
-        "Integrated Google APIs for email notifications and Mercado Pago for payment validation and debt/account status workflows.",
-        "Implemented administrative views to compare pending vs paid balances and support operational decision-making."
-      ]
+      "featured": true,
+      "title": {
+        "en": "Full Stack Developer",
+        "es": "Full Stack Developer"
+      },
+      "highlights": {
+        "en": [
+          "Developed an internal and user-facing web application with React, Node.js and SQL.",
+          "Designed a from-scratch API for payment and session reminders using Node.js/Express.",
+          "Integrated Mercado Pago for payments and debt validation within the operational flow.",
+          "Implemented email notifications via Google API to automate reminders.",
+          "Built account-status views to distinguish pending vs. paid balances for administrative tracking."
+        ],
+        "es": [
+          "Desarrolló una aplicación web interna y para usuarios con React, Node.js y SQL.",
+          "Diseñó una API propia de recordatorios para pagos y sesiones usando Node.js/Express.",
+          "Integró Mercado Pago para pagos y validación de adeudos dentro del flujo operativo.",
+          "Implementó notificaciones por correo mediante Google API para automatizar recordatorios.",
+          "Construyó vistas de estados de cuenta para diferenciar adeudos, pagos y seguimiento administrativo."
+        ]
+      }
     },
     {
-      "title": "Research Assistant / Backend Jr.",
       "company": "Aerospace Development Center, IPN",
       "location": "Mexico City",
       "start": "2021-09",
       "end": "2022-04",
-      "highlights": [
-        "Co-authored a Springer publication on satellite imagery analysis.",
-        "Developed Python-based search algorithms and supported neural network work for satellite image analysis.",
-        "Modeled and implemented a database for laboratory inventory, warehouse control and lending control.",
-        "Supported backend logic for tracking instruments, materials and loan status."
-      ]
+      "featured": true,
+      "title": {
+        "en": "Research Assistant / Backend Jr.",
+        "es": "Asistente de Investigación / Backend Jr."
+      },
+      "highlights": {
+        "en": [
+          "Developed Python algorithms for satellite image search and analysis in an applied research project.",
+          "Modeled a PostgreSQL database for lab storage, inventory and materials control.",
+          "Supported backend logic for instrument/material loan tracking.",
+          "Co-authored a Springer publication on snow/ice coverage analysis using satellite imagery.",
+          "Contributed to neural network / machine learning tasks for scientific data analysis."
+        ],
+        "es": [
+          "Desarrolló algoritmos en Python para búsqueda y análisis de imágenes satelitales en un proyecto de investigación aplicada.",
+          "Modeló una base de datos PostgreSQL para almacenamiento, inventario y control de materiales de laboratorio.",
+          "Apoyó el backend de un sistema para préstamo y seguimiento de instrumentos/materiales.",
+          "Colaboró en una publicación científica en Springer relacionada con análisis de cobertura de hielo/nieve mediante imágenes satelitales.",
+          "Participó en tareas vinculadas a red neuronal / Machine Learning para análisis de datos científicos."
+        ]
+      }
+    },
+    {
+      "company": "AXA Seguros",
+      "location": "Mexico City",
+      "start": "2023-11",
+      "end": "2025-07",
+      "featured": false,
+      "title": {
+        "en": "Customer Support — Life Insurance Policies",
+        "es": "Atención al Cliente — Pólizas de Vida"
+      },
+      "highlights": {
+        "en": [
+          "Provided customer support explaining conditions, clauses and coverage of life insurance policies.",
+          "Communicated sensitive information clearly to help resolve customer questions."
+        ],
+        "es": [
+          "Brindó atención a clientes para explicar condiciones, cláusulas y cobertura de pólizas de vida.",
+          "Comunicó información sensible de manera clara y orientada a resolución de dudas."
+        ]
+      }
+    },
+    {
+      "company": "ARSA Alta Rentabilidad",
+      "location": "Mexico City",
+      "start": "2022-08",
+      "end": "2023-09",
+      "featured": false,
+      "title": {
+        "en": "Telephone Sales Representative",
+        "es": "Representante de Ventas Telefónico"
+      },
+      "highlights": {
+        "en": [
+          "Conducted telephone sales focused on customer attention, follow-up and satisfaction.",
+          "Helped build quotation tools to streamline commercial processes."
+        ],
+        "es": [
+          "Realizó ventas telefónicas con enfoque en atención, seguimiento y satisfacción del cliente.",
+          "Apoyó en la creación de cotizadores para agilizar procesos comerciales."
+        ]
+      }
     }
   ]
 }

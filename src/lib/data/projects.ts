@@ -1,9 +1,10 @@
 import { createClient } from "@/src/lib/supabase/server";
+import type { Localized } from "@/src/lib/data/profile";
 
 export interface Project {
   slug: string;
-  title: string;
-  description: string;
+  title: Localized<string>;
+  description: Localized<string>;
   stack: string[];
   repo: string;
   live: string;
@@ -22,8 +23,8 @@ export async function getProjects(): Promise<Project[]> {
 
   return (data ?? []).map((p) => ({
     slug: p.slug,
-    title: p.title,
-    description: p.description,
+    title: { en: p.title_en, es: p.title_es },
+    description: { en: p.description_en, es: p.description_es },
     stack: p.stack ?? [],
     repo: p.repo ?? "",
     live: p.live ?? "",

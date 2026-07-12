@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "./providers";
 
 import ThemeToggle from "@/src/app/components/ThemeToggle";
+import LocaleToggle from "@/src/app/components/LocaleToggle";
 import { Navbar } from "@/src/app/components/UI/NavBar";
 import BackgroundSelector from "@/src/app/components/UI/BackgroundSelector";
 
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </footer>
 
           <ThemeToggle />
+          <LocaleToggle />
         </Providers>
       </body>
     </html>

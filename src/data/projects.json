@@ -2,8 +2,14 @@
   "projects": [
     {
       "slug": "noktos-invoices-wallet-dashboards",
-      "title": "Noktos — Invoices & Wallet Dashboards",
-      "description": "User-facing dashboards aligned with operational and financial workflows. Backend services and internal APIs with billing modules and Facturama integration; persistence via AWS S3/Storage.",
+      "title": {
+        "en": "Noktos — Invoices & Wallet Dashboards",
+        "es": "Noktos — Dashboards de Facturas y Wallet"
+      },
+      "description": {
+        "en": "User-facing dashboards aligned with operational and financial workflows. Backend services and internal APIs with billing modules and Facturama integration; persistence via AWS S3/Storage.",
+        "es": "Dashboards para usuarios alineados con flujos operativos y financieros. Servicios backend y APIs internas con módulos de facturación e integración con Facturama; persistencia vía AWS S3/Storage."
+      },
       "stack": ["Next.js", "React", "TypeScript", "Node.js", "MySQL", "AWS S3", "Facturama"],
       "repo": "",
       "live": "",
@@ -11,8 +17,14 @@
     },
     {
       "slug": "dictamigos-elite-coach-platform",
-      "title": "Dictamigos / Elite Coach — Client Management Platform",
-      "description": "Platform to manage clients, schedules, routines, reminders and payments. REST API built from scratch with Node.js/Express and SQL database; Google API email notifications; Mercado Pago validation.",
+      "title": {
+        "en": "Dictamigos / Elite Coach — Client Management Platform",
+        "es": "Dictamigos / Elite Coach — Plataforma de Gestión de Clientes"
+      },
+      "description": {
+        "en": "Platform to manage clients, schedules, routines, reminders and payments. REST API built from scratch with Node.js/Express and SQL database; Google API email notifications; Mercado Pago validation.",
+        "es": "Plataforma para gestionar clientes, horarios, rutinas, recordatorios y pagos. API REST construida desde cero con Node.js/Express y base de datos SQL; notificaciones por correo con Google API; validación con Mercado Pago."
+      },
       "stack": ["React", "Node.js", "Express", "SQL", "Google APIs", "Mercado Pago"],
       "repo": "",
       "live": "",
@@ -20,26 +32,89 @@
     },
     {
       "slug": "hacktion-2024-notion-rest-api",
-      "title": "Hacktion 2024 (Notion) — REST API Integration",
-      "description": "REST API with Node.js/Express to connect Git with Notion, including secure token handling and endpoint validation.",
+      "title": {
+        "en": "Hacktion 2024 (Notion) — REST API Integration",
+        "es": "Hacktion 2024 (Notion) — Integración vía API REST"
+      },
+      "description": {
+        "en": "REST API with Node.js/Express to connect Git with Notion, including secure token handling and endpoint validation.",
+        "es": "API REST con Node.js/Express para conectar Git con Notion, incluyendo manejo seguro de tokens y validación de endpoints."
+      },
       "stack": ["Node.js", "Express", "REST API", "Notion API"],
       "repo": "",
       "live": "",
       "type": "project"
     },
     {
+      "slug": "hackmexico-2024-tourism-platform",
+      "title": {
+        "en": "HackMexico 2024 — Tourism Ticketing Platform",
+        "es": "HackMexico 2024 — Plataforma de Turismo tipo Ticketmaster"
+      },
+      "description": {
+        "en": "C# backend for a Ticketmaster-style tourism platform built during the AngelHack hackathon, handling data persistence and business logic under hackathon time constraints.",
+        "es": "Backend en C# para una plataforma de turismo tipo Ticketmaster desarrollada durante el hackathon AngelHack, con persistencia y lógica de datos bajo presión de tiempo."
+      },
+      "stack": ["C#", "Backend", "Hackathon"],
+      "repo": "",
+      "live": "",
+      "type": "project"
+    },
+    {
+      "slug": "mizhouse-cecyt9-capstone",
+      "title": {
+        "en": "Mizhouse — Real-Time Chat & Geolocation",
+        "es": "Mizhouse — Chat en Tiempo Real y Geolocalización"
+      },
+      "description": {
+        "en": "Capstone project at CECyT 9 featuring real-time chat and geolocation for residents, using location APIs for coordinate extraction and map visualization, with a backend connected to a database for user interaction.",
+        "es": "Proyecto capstone en CECyT 9 con chat en tiempo real y geolocalización para residentes, usando APIs de ubicación para extracción de coordenadas y visualización en mapas, con backend conectado a base de datos."
+      },
+      "stack": ["Real-time Chat", "Geolocation", "Maps API", "Backend"],
+      "repo": "",
+      "live": "",
+      "type": "project"
+    },
+    {
       "slug": "web-dev-instructor-fes-acatlan",
-      "title": "Instructor — Web Development Fundamentals",
-      "description": "Delivered a web development course covering HTML/JavaScript/CSS and API consumption fundamentals.",
+      "title": {
+        "en": "Instructor — Web Development Fundamentals",
+        "es": "Instructor — Fundamentos de Desarrollo Web"
+      },
+      "description": {
+        "en": "Delivered a web development course covering HTML/JavaScript/CSS and API consumption fundamentals.",
+        "es": "Impartió un curso de desarrollo web cubriendo fundamentos de HTML/JavaScript/CSS y consumo de APIs."
+      },
       "stack": ["HTML", "CSS", "JavaScript", "APIs"],
       "repo": "",
       "live": "",
       "type": "teaching"
     },
     {
+      "slug": "speaker-upiita-hackathon-2025",
+      "title": {
+        "en": "Speaker — UPIITA IPN Hackathon",
+        "es": "Speaker — Hackathon UPIITA IPN"
+      },
+      "description": {
+        "en": "Gave a talk at the UPIITA IPN Hackathon (November 2025).",
+        "es": "Dio una conferencia en el Hackathon UPIITA IPN (noviembre 2025)."
+      },
+      "stack": [],
+      "repo": "",
+      "live": "",
+      "type": "teaching"
+    },
+    {
       "slug": "quiniela-supabase-vercel",
-      "title": "Quiniela — Sports Prediction App",
-      "description": "Full-stack sports quiniela app where users can register, make match predictions and track standings in real time. Backend powered by Supabase (PostgreSQL + Auth + Realtime) and deployed on Vercel.",
+      "title": {
+        "en": "Quiniela — Sports Prediction App",
+        "es": "Quiniela — App de Predicciones Deportivas"
+      },
+      "description": {
+        "en": "Full-stack sports quiniela app where users can register, make match predictions and track standings in real time. Backend powered by Supabase (PostgreSQL + Auth + Realtime) and deployed on Vercel.",
+        "es": "Aplicación de quiniela deportiva full-stack donde los usuarios se registran, hacen predicciones de partidos y siguen la tabla de posiciones en tiempo real. Backend con Supabase (PostgreSQL + Auth + Realtime), desplegada en Vercel."
+      },
       "stack": ["Next.js", "React", "TypeScript", "Supabase", "PostgreSQL", "Vercel"],
       "repo": "",
       "live": "https://quiniela-front-ten.vercel.app/",
@@ -47,8 +122,14 @@
     },
     {
       "slug": "spotify-music-dashboard",
-      "title": "Spotify Music Dashboard",
-      "description": "Personal music analytics dashboard integrated with the Spotify API. Displays top artists, top tracks, recently played history, playlists and currently playing track — all with time-range filters and OAuth login.",
+      "title": {
+        "en": "Spotify Music Dashboard",
+        "es": "Dashboard Musical de Spotify"
+      },
+      "description": {
+        "en": "Personal music analytics dashboard integrated with the Spotify API. Displays top artists, top tracks, recently played history, playlists and currently playing track — all with time-range filters and OAuth login.",
+        "es": "Dashboard personal de analítica musical integrado con la API de Spotify. Muestra top artistas, top canciones, historial reciente, playlists y la canción en reproducción — con filtros de rango de tiempo y login OAuth."
+      },
       "stack": ["Next.js", "TypeScript", "Spotify API", "OAuth 2.0", "REST API"],
       "repo": "",
       "live": "/music",
