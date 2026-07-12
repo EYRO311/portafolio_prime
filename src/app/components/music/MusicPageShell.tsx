@@ -23,7 +23,7 @@ export default function MusicPageShell({
       className="min-h-screen p-6"
       style={{ color: dark ? "#ffffff" : "#0a0a0a" }}
     >
-      <section className="mx-auto max-w-6xl pt-20">
+      <section className="mx-auto max-w-6xl pt-8">
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1

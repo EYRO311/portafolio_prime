@@ -56,10 +56,6 @@ const UI = {
     phone: 'Phone',
     linkedin: 'LinkedIn',
     github: 'GitHub',
-    navHome: 'Home',
-    navSkills: 'Skills',
-    navProjects: 'Projects',
-    navContact: 'Contact',
   },
   es: {
     availableForWork: 'Disponible para trabajar',
@@ -86,35 +82,10 @@ const UI = {
     phone: 'Teléfono',
     linkedin: 'LinkedIn',
     github: 'GitHub',
-    navHome: 'Inicio',
-    navSkills: 'Habilidades',
-    navProjects: 'Proyectos',
-    navContact: 'Contacto',
   },
 }
 
 /* ── SVG Icons ──────────────────────────────────────────────────── */
-const IconHome = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-    <polyline points="9 22 9 12 15 12 15 22"/>
-  </svg>
-)
-const IconCpu = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="4" width="16" height="16" rx="2"/>
-    <rect x="9" y="9" width="6" height="6"/>
-    <line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/>
-    <line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
-    <line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/>
-    <line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
-  </svg>
-)
-const IconFolder = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
-  </svg>
-)
 const IconMail = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
@@ -124,12 +95,6 @@ const IconMail = () => (
 const IconGithub = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
-  </svg>
-)
-const IconContact = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-    <circle cx="12" cy="7" r="4"/>
   </svg>
 )
 const IconPhone = () => (
@@ -158,31 +123,6 @@ const CSS = `
     padding: 6rem 3rem 6rem 2rem;
     max-width: 1180px; margin: 0 auto;
     position: relative;
-  }
-
-  /* ── sidebar ── */
-  .sidebar {
-    position: fixed; left: 1.25rem; top: 50%; z-index: 100;
-    transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: 1rem;
-    background: var(--sidebar-bg);
-    border: 1px solid color-mix(in srgb, var(--accent1) 14%, transparent);
-    border-radius: 20px; padding: 1.25rem 0.75rem;
-    backdrop-filter: blur(16px);
-    transition: background 0.3s, border-color 0.3s;
-  }
-  .si {
-    width: 36px; height: 36px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 10px; color: var(--text-subtle);
-    text-decoration: none; border: 1px solid transparent;
-    transition: all 0.2s;
-  }
-  .si:hover, .si.active {
-    color: var(--accent1);
-    border-color: color-mix(in srgb, var(--accent1) 30%, transparent);
-    background: color-mix(in srgb, var(--accent1) 8%, transparent);
-    box-shadow: 0 0 14px color-mix(in srgb, var(--accent1) 20%, transparent);
   }
 
   /* ════════════ HERO ════════════ */
@@ -525,11 +465,6 @@ const CSS = `
   /* ── responsive tablet ── */
   @media (max-width: 900px) {
     main { padding-left: 0; }
-    .sidebar {
-      position: fixed; bottom: 1.25rem; left: 50%; top: auto;
-      transform: translateX(-50%);
-      flex-direction: row; padding: 0.75rem 1.25rem; border-radius: 20px;
-    }
     .section { padding: 5rem 1.5rem 9rem; }
     .skills-grid { grid-template-columns: 1fr; gap: 3rem; }
     .contact-grid { grid-template-columns: 1fr; }
@@ -552,7 +487,6 @@ const CSS = `
     .contact-grid { grid-template-columns: 1fr; }
     .cert-card { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
     .page-footer { flex-direction: column; align-items: flex-start; gap: 0.75rem; font-size: 0.75rem; }
-    .sidebar { gap: 0.65rem; padding: 0.6rem 1rem; }
   }
 `
 
@@ -592,15 +526,6 @@ export default function HomeClient({
   return (
     <>
       <style>{CSS}</style>
-
-      {/* ── Sidebar ── */}
-      <nav className="sidebar" aria-label="Navigation">
-        <a href="#hero"     className="si active" title={t.navHome}><IconHome /></a>
-        <a href="#skills"   className="si"        title={t.navSkills}><IconCpu /></a>
-        <a href="#projects" className="si"        title={t.navProjects}><IconFolder /></a>
-        <a href="#contact"  className="si"        title={t.navContact}><IconContact /></a>
-        <a href={profile.links.github} className="si" title="GitHub" target="_blank" rel="noopener"><IconGithub /></a>
-      </nav>
 
       <main>
 
