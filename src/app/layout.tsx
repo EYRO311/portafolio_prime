@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ]}
             socials={[
               { type: "external", href: "https://github.com/EYRO311",                              label: "GitHub",   icon: "github"   },
-              { type: "external", href: "https://linkedin.com/in/emiliano-yahel-ruiz-oropeza",    label: "LinkedIn", icon: "linkedin" },
+              { type: "external", href: "https://www.linkedin.com/in/emiliano-yahel-ruiz-oropeza-3a473a320/", label: "LinkedIn", icon: "linkedin" },
               { type: "external", href: "mailto:ruiz.oropeza.emiliano.yahel@gmail.com",            label: "Email",    icon: "mail"     },
             ]}
             spy

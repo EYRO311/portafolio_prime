@@ -1,6 +1,6 @@
 "use client"
 
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties, type MouseEvent } from 'react'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 import type { Profile } from '@/src/lib/data/profile'
 import type { Project } from '@/src/lib/data/projects'
@@ -52,6 +52,7 @@ const UI = {
     contactMePrefix: 'Contact',
     contactBody: 'Open to new opportunities, collaborations and interesting projects. Feel free to reach out through any of the channels below.',
     email: 'Email',
+    emailCopied: 'Copied to clipboard!',
     phone: 'Phone',
     linkedin: 'LinkedIn',
     github: 'GitHub',
@@ -81,6 +82,7 @@ const UI = {
     contactMePrefix: '',
     contactBody: 'Abierto a nuevas oportunidades, colaboraciones y proyectos interesantes. Escríbeme por cualquiera de estos canales.',
     email: 'Correo',
+    emailCopied: '¡Copiado al portapapeles!',
     phone: 'Teléfono',
     linkedin: 'LinkedIn',
     github: 'GitHub',
@@ -575,9 +577,17 @@ export default function HomeClient({
 }) {
   const { locale } = useLocale()
   const t = UI[locale]
+  const [emailCopied, setEmailCopied] = useState(false)
 
   const firstName = profile.name.split(' ')[0]
   const shortRole = profile.role[locale].split('|')[0].trim()
+
+  const handleCopyEmail = (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+    navigator.clipboard.writeText(profile.contact.email)
+    setEmailCopied(true)
+    setTimeout(() => setEmailCopied(false), 2000)
+  }
 
   return (
     <>
@@ -778,11 +788,11 @@ export default function HomeClient({
             <p className="sec-body">{t.contactBody}</p>
 
             <div className="contact-grid">
-              <a href={`mailto:${profile.contact.email}`} className="contact-card">
+              <a href={`mailto:${profile.contact.email}`} className="contact-card" onClick={handleCopyEmail}>
                 <div className="contact-icon-wrap"><IconMail /></div>
                 <div>
                   <p className="contact-label">{t.email}</p>
-                  <p className="contact-value">{profile.contact.email}</p>
+                  <p className="contact-value">{emailCopied ? t.emailCopied : profile.contact.email}</p>
                 </div>
               </a>
 
