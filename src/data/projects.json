@@ -123,6 +123,21 @@
       "type": "teaching"
     },
     {
+      "slug": "mi-agenda-smart-assistant",
+      "title": {
+        "en": "Mi Agenda — Smart Scheduling Assistant",
+        "es": "Mi Agenda — Asistente Inteligente de Agenda"
+      },
+      "description": {
+        "en": "Personal assistant that classifies tasks (commitment, personal, event), calculates free time from Google Calendar, creates the matching calendar event and auto-generates a Notion page per task — orchestrated with a Saga pattern (Next.js + Supabase) so a failure at any step rolls back the previous ones. Includes a Django/DRF microservice for availability calculations and AES-256-GCM encryption for sensitive fields.",
+        "es": "Asistente personal que clasifica tareas (compromiso, personal, evento), calcula tus huecos libres a partir de Google Calendar, crea el evento correspondiente y genera automáticamente una página en Notion por cada tarea — orquestado con patrón Saga (Next.js + Supabase) para revertir los pasos anteriores si algo falla a la mitad. Incluye un microservicio en Django/DRF para el cálculo de disponibilidad y encriptación AES-256-GCM para campos sensibles."
+      },
+      "stack": ["Next.js", "TypeScript", "Django", "Django REST Framework", "Supabase", "PostgreSQL", "Google Calendar API", "Notion API", "OAuth 2.0"],
+      "repo": "https://github.com/EYRO311/asistences",
+      "live": "https://asistences-seven.vercel.app",
+      "type": "project"
+    },
+    {
       "slug": "quiniela-supabase-vercel",
       "title": {
         "en": "Quiniela — Sports Prediction App",
