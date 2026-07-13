@@ -1,10 +1,13 @@
 "use client"
 
 import { useState, type CSSProperties, type MouseEvent } from 'react'
+import { Unica_One } from 'next/font/google'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 import type { Profile } from '@/src/lib/data/profile'
 import type { Project } from '@/src/lib/data/projects'
 import type { Skills } from '@/src/lib/data/skills'
+
+const unicaOne = Unica_One({ weight: '400', style: 'normal', subsets: ['latin'] })
 
 /* ── Static config ──────────────────────────────────────────────── */
 // "since" = fecha del primer trabajo donde usé esta tecnología (ver Experience).
@@ -555,10 +558,10 @@ export default function HomeClient({
             <p className="hero-hi">{t.greeting}</p>
 
             <div className="glitch-wrap">
-              <h1 className="glitch-name" data-text={firstName}>{firstName}</h1>
+              <h1 className={`glitch-name ${unicaOne.className}`} data-text={firstName}>{firstName}</h1>
             </div>
 
-            <p className="hero-role">{shortRole}</p>
+            <p className={`hero-role ${unicaOne.className}`}>{shortRole}</p>
             <p className="hero-desc">{profile.summary[locale].slice(0, 300)}&hellip;</p>
 
             <div className="hero-tags">
