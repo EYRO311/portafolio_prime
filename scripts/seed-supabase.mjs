@@ -96,6 +96,7 @@ async function seedProjects() {
     stack: p.stack ?? [],
     repo: p.repo ?? "",
     live: p.live ?? "",
+    certificate_url: p.certificate ?? "",
     type: p.type,
     sort_order: i,
   }));

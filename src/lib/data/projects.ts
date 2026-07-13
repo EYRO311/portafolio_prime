@@ -8,6 +8,7 @@ export interface Project {
   stack: string[];
   repo: string;
   live: string;
+  certificateUrl: string;
   type: string;
 }
 
@@ -28,6 +29,7 @@ export async function getProjects(): Promise<Project[]> {
     stack: p.stack ?? [],
     repo: p.repo ?? "",
     live: p.live ?? "",
+    certificateUrl: p.certificate_url ?? "",
     type: p.type,
   }));
 }

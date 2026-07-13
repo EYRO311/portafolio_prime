@@ -39,6 +39,7 @@ const CERT_LINKS: Record<string, string> = {
   'HTML and CSS in Depth': 'https://coursera.org/verify/AV7315UHG9HR',
   'Programming with JavaScript': 'https://coursera.org/verify/2RSLGSM52EUF',
   'Introduction to Front-End Development': 'https://coursera.org/verify/6Y8P878NNCJX',
+  'Simposio Educativo de la Ciudad de México': 'https://drive.google.com/file/d/12gyZb9eSv_UOxxp88C5tMvNuUZPmPu6P/view?usp=drive_link',
 }
 
 const UI = {
@@ -57,6 +58,7 @@ const UI = {
     projectsWord: 'Projects',
     repo: '↳ Repo',
     live: '↳ Live ↗',
+    certificateLink: '↳ Certificate ↗',
     privateConfidential: 'Private / Confidential',
     getInTouch: 'Get in touch',
     contactMeWord: 'Me',
@@ -83,6 +85,7 @@ const UI = {
     projectsWord: 'Proyectos',
     repo: '↳ Repo',
     live: '↳ Demo ↗',
+    certificateLink: '↳ Certificado ↗',
     privateConfidential: 'Privado / Confidencial',
     getInTouch: 'Hablemos',
     contactMeWord: 'Contacto',
@@ -707,7 +710,8 @@ export default function HomeClient({
                     <div className="proj-links">
                       {p.repo && <a href={p.repo} className="proj-link" target="_blank" rel="noopener">{t.repo}</a>}
                       {p.live && <a href={p.live} className="proj-link" target="_blank" rel="noopener">{t.live}</a>}
-                      {!p.repo && !p.live && (
+                      {p.certificateUrl && <a href={p.certificateUrl} className="proj-link" target="_blank" rel="noopener">{t.certificateLink}</a>}
+                      {!p.repo && !p.live && !p.certificateUrl && (
                         <span className="proj-link" style={{ opacity: 0.3, cursor: 'default' }}>{t.privateConfidential}</span>
                       )}
                     </div>
