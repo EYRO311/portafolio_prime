@@ -46,6 +46,21 @@
       "type": "project"
     },
     {
+      "slug": "nasa-space-apps-challenge-2025",
+      "title": {
+        "en": "NASA International Space Apps Challenge 2025",
+        "es": "NASA International Space Apps Challenge 2025"
+      },
+      "description": {
+        "en": "\"Galactic Problem Solver\" — participated in the 2025 NASA International Space Apps Challenge (October 4-5, 2025), addressing a challenge related to Earth and space data.",
+        "es": "\"Galactic Problem Solver\" — participó en el NASA International Space Apps Challenge 2025 (4-5 de octubre de 2025), abordando un reto relacionado con datos de la Tierra y el espacio."
+      },
+      "stack": ["Hackathon", "NASA"],
+      "repo": "",
+      "live": "",
+      "type": "project"
+    },
+    {
       "slug": "hackmexico-2024-tourism-platform",
       "title": {
         "en": "HackMexico 2024 — Tourism Ticketing Platform",
@@ -91,14 +106,14 @@
       "type": "teaching"
     },
     {
-      "slug": "speaker-upiita-hackathon-2025",
+      "slug": "speaker-polihacks-upiita-2025",
       "title": {
-        "en": "Speaker — UPIITA IPN Hackathon",
-        "es": "Speaker — Hackathon UPIITA IPN"
+        "en": "Speaker — PoliHacks by CIS (IEEE UPIITA-IPN)",
+        "es": "Speaker — PoliHacks by CIS (IEEE UPIITA-IPN)"
       },
       "description": {
-        "en": "Gave a talk at the UPIITA IPN Hackathon (November 2025).",
-        "es": "Dio una conferencia en el Hackathon UPIITA IPN (noviembre 2025)."
+        "en": "Gave the talk \"Electronics and Programming in a Competition Car\" at the PoliHacks hackathon, hosted by the CIS Chapter of the IEEE UPIITA-IPN Student Branch (November 22, 2025).",
+        "es": "Impartió la ponencia \"Electrónica y Programación en un Auto de Competencia\" en el hackathon PoliHacks, organizado por el Capítulo Técnico CIS de la Rama Estudiantil IEEE UPIITA-IPN (22 de noviembre de 2025)."
       },
       "stack": [],
       "repo": "",
