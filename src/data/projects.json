@@ -78,12 +78,12 @@
     {
       "slug": "web-dev-instructor-fes-acatlan",
       "title": {
-        "en": "Instructor — Web Development Fundamentals",
-        "es": "Instructor — Fundamentos de Desarrollo Web"
+        "en": "Instructor — Basic JavaScript Course",
+        "es": "Instructor — Curso Básico de JavaScript"
       },
       "description": {
-        "en": "Delivered a web development course covering HTML/JavaScript/CSS and API consumption fundamentals.",
-        "es": "Impartió un curso de desarrollo web cubriendo fundamentos de HTML/JavaScript/CSS y consumo de APIs."
+        "en": "Taught a basic JavaScript course at FES Acatlán, covering HTML/CSS fundamentals, core JS concepts and API consumption for beginners.",
+        "es": "Impartió un curso básico de JavaScript en FES Acatlán, cubriendo fundamentos de HTML/CSS, conceptos base de JS y consumo de APIs para principiantes."
       },
       "stack": ["HTML", "CSS", "JavaScript", "APIs"],
       "repo": "",
