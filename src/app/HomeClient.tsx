@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, type CSSProperties, type MouseEvent } from 'react'
-import { Unica_One, Audiowide } from 'next/font/google'
+import { Unica_One, Audiowide, Anta } from 'next/font/google'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 import type { Profile } from '@/src/lib/data/profile'
 import type { Project } from '@/src/lib/data/projects'
@@ -9,6 +9,9 @@ import type { Skills } from '@/src/lib/data/skills'
 
 const unicaOne = Unica_One({ weight: '400', style: 'normal', subsets: ['latin'] })
 const audiowide = Audiowide({ weight: '400', style: 'normal', subsets: ['latin'] })
+const anta = Anta({ weight: '400', style: 'normal', subsets: ['latin'] })
+
+const DESC_PREVIEW_LENGTH = 280
 
 /* ── Static config ──────────────────────────────────────────────── */
 // "since" = fecha del primer trabajo donde usé esta tecnología (ver Experience).
@@ -50,6 +53,8 @@ const UI = {
   en: {
     availableForWork: 'Available for work',
     greeting: "Hi, I'm",
+    showMore: 'Show more',
+    showLess: 'Show less',
     viewProjects: 'View projects →',
     contact: 'Contact',
     githubLink: 'GitHub ↗',
@@ -77,6 +82,8 @@ const UI = {
   es: {
     availableForWork: 'Disponible para trabajar',
     greeting: 'Hola, soy',
+    showMore: 'Ver más',
+    showLess: 'Ver menos',
     viewProjects: 'Ver proyectos →',
     contact: 'Contacto',
     githubLink: 'GitHub ↗',
@@ -207,6 +214,13 @@ const CSS = `
   .hero-role::before { content: '> '; font-family: monospace; color: var(--accent1); opacity: 0.9; }
 
   .hero-desc { font-size: 1rem; line-height: 1.78; color: var(--text-muted); max-width: 620px; }
+  .hero-desc-toggle {
+    display: inline; margin-left: 0.4rem;
+    background: none; border: none; padding: 0; cursor: pointer;
+    font-size: 0.86rem; font-weight: 700; color: var(--accent1);
+    text-decoration: underline; text-underline-offset: 2px;
+  }
+  .hero-desc-toggle:hover { color: var(--accent2); }
 
   .hero-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; }
   .htag {
@@ -530,9 +544,13 @@ export default function HomeClient({
   const { locale } = useLocale()
   const t = UI[locale]
   const [emailCopied, setEmailCopied] = useState(false)
+  const [descExpanded, setDescExpanded] = useState(false)
 
   const firstName = profile.name.split(' ')[0]
   const shortRole = profile.role[locale].split('|')[0].trim()
+  const fullDesc = profile.summary[locale]
+  const descIsLong = fullDesc.length > DESC_PREVIEW_LENGTH
+  const descText = descExpanded || !descIsLong ? fullDesc : `${fullDesc.slice(0, DESC_PREVIEW_LENGTH)}…`
 
   const handleCopyEmail = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
@@ -563,7 +581,18 @@ export default function HomeClient({
             </div>
 
             <p className={`hero-role ${unicaOne.className}`}>{shortRole}</p>
-            <p className="hero-desc">{profile.summary[locale].slice(0, 300)}&hellip;</p>
+            <p className={`hero-desc ${anta.className}`}>
+              {descText}
+              {descIsLong && (
+                <button
+                  type="button"
+                  className="hero-desc-toggle"
+                  onClick={() => setDescExpanded(v => !v)}
+                >
+                  {descExpanded ? t.showLess : t.showMore}
+                </button>
+              )}
+            </p>
 
             <div className="hero-tags">
               {profile.stack_keywords.slice(0, 9).map(k => (
