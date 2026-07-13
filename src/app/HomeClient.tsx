@@ -1,15 +1,17 @@
 "use client"
 
 import { useState, type CSSProperties, type MouseEvent } from 'react'
-import { Unica_One, Audiowide, Anta } from 'next/font/google'
+import { Audiowide, Anta, Zen_Dots, Asimovian } from 'next/font/google'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 import type { Profile } from '@/src/lib/data/profile'
 import type { Project } from '@/src/lib/data/projects'
 import type { Skills } from '@/src/lib/data/skills'
 
-const unicaOne = Unica_One({ weight: '400', style: 'normal', subsets: ['latin'] })
-const audiowide = Audiowide({ weight: '400', style: 'normal', subsets: ['latin'] })
-const anta = Anta({ weight: '400', style: 'normal', subsets: ['latin'] })
+const audiowide = Audiowide({ weight: '400', style: 'normal', subsets: ['latin'], variable: '--font-audiowide' })
+const anta = Anta({ weight: '400', style: 'normal', subsets: ['latin'], variable: '--font-anta' })
+const zenDots = Zen_Dots({ weight: '400', style: 'normal', subsets: ['latin'], variable: '--font-zen-dots' })
+const asimovian = Asimovian({ weight: '400', style: 'normal', subsets: ['latin'], variable: '--font-asimovian' })
+const fontVars = `${audiowide.variable} ${anta.variable} ${zenDots.variable} ${asimovian.variable}`
 
 const DESC_PREVIEW_LENGTH = 280
 
@@ -142,6 +144,23 @@ const CSS = `
   /* ── layout ── */
   main { position: relative; z-index: 1; padding-left: 5rem; }
 
+  /* ── tipografía: Anta para texto normal, Asimovian para subtítulos, ── */
+  /* ── Zen Dots para títulos de certificados, Audiowide para el nombre ── */
+  .hero-hi, .hero-desc, .hero-desc-toggle, .sec-body, .htag, .cat-chip, .lang-chip,
+  .proj-desc, .proj-tag, .proj-badge, .proj-link, .exp-highlights li, .exp-dates,
+  .exp-company, .contact-value, .contact-label, .page-footer, .footer-links a,
+  .bar-name, .bar-pct {
+    font-family: var(--font-anta), sans-serif;
+  }
+
+  .hero-role, .sec-tag, .cat-label, .cert-heading {
+    font-family: var(--font-asimovian), sans-serif;
+  }
+
+  .cert-name {
+    font-family: var(--font-zen-dots), sans-serif;
+  }
+
   .section {
     min-height: 100vh;
     display: flex; align-items: center;
@@ -167,6 +186,7 @@ const CSS = `
   /* glitch effect */
   .glitch-wrap { position: relative; display: inline-block; }
   .glitch-name {
+    font-family: var(--font-audiowide), sans-serif;
     font-size: clamp(3.8rem, 9vw, 6.5rem);
     font-weight: 900; letter-spacing: -2px; line-height: 1;
     color: var(--text);
@@ -563,7 +583,7 @@ export default function HomeClient({
     <>
       <style>{CSS}</style>
 
-      <main>
+      <main className={fontVars}>
 
         {/* ══════════════════════ HERO ══════════════════════ */}
         <section id="hero" className="section">
@@ -574,14 +594,14 @@ export default function HomeClient({
 
           <div className="hero-inner">
             <span className="hero-badge">{t.availableForWork}</span>
-            <p className={`hero-hi ${anta.className}`}>{t.greeting}</p>
+            <p className="hero-hi">{t.greeting}</p>
 
             <div className="glitch-wrap">
-              <h1 className={`glitch-name ${audiowide.className}`} data-text={firstName}>{firstName}</h1>
+              <h1 className="glitch-name" data-text={firstName}>{firstName}</h1>
             </div>
 
-            <p className={`hero-role ${unicaOne.className}`}>{shortRole}</p>
-            <p className={`hero-desc ${anta.className}`}>
+            <p className="hero-role">{shortRole}</p>
+            <p className="hero-desc">
               {descText}
               {descIsLong && (
                 <button
