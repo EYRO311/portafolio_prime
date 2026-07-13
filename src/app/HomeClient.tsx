@@ -574,7 +574,7 @@ export default function HomeClient({
 
           <div className="hero-inner">
             <span className="hero-badge">{t.availableForWork}</span>
-            <p className="hero-hi">{t.greeting}</p>
+            <p className={`hero-hi ${anta.className}`}>{t.greeting}</p>
 
             <div className="glitch-wrap">
               <h1 className={`glitch-name ${audiowide.className}`} data-text={firstName}>{firstName}</h1>
