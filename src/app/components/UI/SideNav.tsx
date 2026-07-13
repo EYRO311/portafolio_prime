@@ -93,12 +93,16 @@ const CSS = `
     .sidebar {
       position: fixed; bottom: 1.25rem; left: 50%; top: auto;
       transform: translateX(-50%);
-      flex-direction: row; padding: 0.75rem 1.25rem; border-radius: 20px;
+      flex-direction: row; flex-wrap: wrap; justify-content: center;
+      max-width: min(92vw, 280px);
+      gap: 0.5rem; padding: 0.65rem 0.85rem; border-radius: 20px;
     }
-    .sidebar .si-divider { width: 1px; height: auto; margin: 0.35rem 0.15rem; }
+    .sidebar .si-divider { display: none; }
+    .si { width: 34px; height: 34px; }
   }
   @media (max-width: 480px) {
-    .sidebar { gap: 0.65rem; padding: 0.6rem 1rem; }
+    .sidebar { max-width: min(90vw, 240px); gap: 0.4rem; padding: 0.55rem 0.7rem; }
+    .si { width: 32px; height: 32px; }
   }
 `
 
