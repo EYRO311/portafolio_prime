@@ -157,7 +157,7 @@ const CSS = `
     font-family: var(--font-asimovian), sans-serif;
   }
 
-  .cert-name {
+  .cert-name, .sec-h2 {
     font-family: var(--font-zen-dots), sans-serif;
   }
 
