@@ -14,6 +14,7 @@ const SKILL_BARS = [
   { name: 'Node.js / Express', since: '2024-06' },
   { name: 'SQL / Databases', since: '2021-09' },
   { name: 'TypeScript', since: '2025-06' },
+  { name: 'Python', since: '2025-07' },
 ]
 
 function yearsSince(dateStr: string): number {
