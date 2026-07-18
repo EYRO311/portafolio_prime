@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import SpotifyPlayer from "@/src/app/components/music/SpotifyPlayer";
 import RetroPanel from "@/src/app/components/music/RetroPanel";
 import Cover from "@/src/app/components/music/cover";
+import ReceiptGenerator from "@/src/app/components/music/ReceiptGenerator";
 import { RETRO, retroMono } from "@/src/app/components/music/retroTheme";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
@@ -414,6 +415,9 @@ export default function MusicClient() {
 
           {/* Top Tracks */}
           <RetroPanel title="TOP TRACKS" accent={RETRO.purple}>
+            <div className="mb-4">
+              <ReceiptGenerator apiPath="/auth/spotify/top-tracks" />
+            </div>
             <div className="grid gap-3">
               {data?.topTracks.map((track, index) => (
                 <article key={track.id} className="flex items-center gap-4 rounded-lg p-4" style={rowStyle}>

@@ -5,6 +5,7 @@ import MusicPageShell from "@/src/app/components/music/MusicPageShell";
 import TimeRangeTabs from "@/src/app/components/music/TimeRangeTabs";
 import PaginationControls from "@/src/app/components/music/PaginationControls";
 import Cover from "@/src/app/components/music/cover";
+import ReceiptGenerator from "@/src/app/components/music/ReceiptGenerator";
 import { RETRO } from "@/src/app/components/music/retroTheme";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
@@ -101,6 +102,10 @@ export default function TopTracksPage() {
       {!loading && !error && tracks.length === 0 && (
         <p style={{ color: RETRO.textSubtle }}>No se encontraron tracks para este rango.</p>
       )}
+
+      <div className="mb-6">
+        <ReceiptGenerator apiPath="/auth/spotify/top-tracks" />
+      </div>
 
       <div className="grid gap-3">
         {tracks.map((track, index) => (
