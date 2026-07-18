@@ -5,8 +5,14 @@ import { usePathname } from 'next/navigation'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 
 const LABELS = {
-  en: { home: 'Home', skills: 'Skills', experience: 'Experience', projects: 'Projects', contact: 'Contact', music: 'Music' },
-  es: { home: 'Inicio', skills: 'Habilidades', experience: 'Experiencia', projects: 'Proyectos', contact: 'Contacto', music: 'Música' },
+  en: {
+    home: 'Home', skills: 'Skills', experience: 'Experience', projects: 'Projects', contact: 'Contact', music: 'Music',
+    dashboard: 'Dashboard', topArtists: 'Top Artists', topTracks: 'Top Tracks', history: 'History', discover: 'Discover', backToPortfolio: 'Back to portfolio',
+  },
+  es: {
+    home: 'Inicio', skills: 'Habilidades', experience: 'Experiencia', projects: 'Proyectos', contact: 'Contacto', music: 'Música',
+    dashboard: 'Dashboard', topArtists: 'Top Artists', topTracks: 'Top Tracks', history: 'Historial', discover: 'Descubrir', backToPortfolio: 'Volver al portafolio',
+  },
 }
 
 const SECTION_IDS = ['hero', 'skills', 'experience', 'projects', 'contact']
@@ -51,6 +57,32 @@ const IconMusic = () => (
     <circle cx="18" cy="16" r="3" />
   </svg>
 )
+const IconMic = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
+    <path d="M19 10v2a7 7 0 01-14 0v-2" />
+    <line x1="12" y1="19" x2="12" y2="23" />
+    <line x1="8" y1="23" x2="16" y2="23" />
+  </svg>
+)
+const IconDisc = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+)
+const IconClock = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+)
+const IconCompass = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+  </svg>
+)
 
 const CSS = `
   .sidebar {
@@ -90,6 +122,10 @@ const CSS = `
     transition: opacity 0.15s ease, transform 0.15s ease;
   }
   .si:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
+  .si-divider {
+    height: 1px; background: color-mix(in srgb, var(--accent1) 16%, transparent);
+    margin: 0.15rem 0.35rem;
+  }
   @media (max-width: 900px) {
     .sidebar {
       position: fixed; bottom: 1.25rem; left: 50%; top: auto;
@@ -104,6 +140,7 @@ const CSS = `
       transform: translateX(-50%) translateY(4px);
     }
     .si:hover::after { transform: translateX(-50%) translateY(0); }
+    .si-divider { width: 1px; height: auto; margin: 0.35rem 0.15rem; }
   }
   @media (max-width: 480px) {
     .sidebar { max-width: min(90vw, 240px); gap: 0.4rem; padding: 0.55rem 0.7rem; }
@@ -143,7 +180,7 @@ export default function SideNav() {
   const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`)
   const isActive = (id: string) => isHome && activeSection === id
 
-  const items = useMemo(
+  const homeItems = useMemo(
     () => [
       { id: 'hero', label: t.home, icon: <IconHome /> },
       { id: 'skills', label: t.skills, icon: <IconCpu /> },
@@ -154,11 +191,44 @@ export default function SideNav() {
     [t]
   )
 
+  const musicItems = useMemo(
+    () => [
+      { href: '/music', label: t.dashboard, icon: <IconMusic /> },
+      { href: '/music/top-artists', label: t.topArtists, icon: <IconMic /> },
+      { href: '/music/top-tracks', label: t.topTracks, icon: <IconDisc /> },
+      { href: '/music/history', label: t.history, icon: <IconClock /> },
+      { href: '/music/discover', label: t.discover, icon: <IconCompass /> },
+    ],
+    [t]
+  )
+
+  if (isMusic) {
+    return (
+      <>
+        <style>{CSS}</style>
+        <nav className="sidebar" aria-label="Music navigation">
+          {musicItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className={`si${pathname === item.href ? ' active' : ''}`}
+              title={item.label}
+            >
+              {item.icon}
+            </a>
+          ))}
+          <div className="si-divider" />
+          <a href="/" className="si" title={t.backToPortfolio}><IconHome /></a>
+        </nav>
+      </>
+    )
+  }
+
   return (
     <>
       <style>{CSS}</style>
       <nav className="sidebar" aria-label="Navigation">
-        {items.map((item) => (
+        {homeItems.map((item) => (
           <a
             key={item.id}
             href={sectionHref(item.id)}
@@ -168,7 +238,7 @@ export default function SideNav() {
             {item.icon}
           </a>
         ))}
-        <a href="/music" className={`si${isMusic ? ' active' : ''}`} title={t.music}><IconMusic /></a>
+        <a href="/music" className="si" title={t.music}><IconMusic /></a>
       </nav>
     </>
   )
