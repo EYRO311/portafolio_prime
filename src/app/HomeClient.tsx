@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type CSSProperties, type MouseEvent } from 'react'
+import { useState, type MouseEvent } from 'react'
 import { Audiowide, Anta, Zen_Dots, Asimovian } from 'next/font/google'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 import type { Profile } from '@/src/lib/data/profile'
@@ -14,25 +14,6 @@ const asimovian = Asimovian({ weight: '400', style: 'normal', subsets: ['latin']
 const fontVars = `${audiowide.variable} ${anta.variable} ${zenDots.variable} ${asimovian.variable}`
 
 const DESC_PREVIEW_LENGTH = 280
-
-/* ── Static config ──────────────────────────────────────────────── */
-// "since" = fecha del primer trabajo donde usé esta tecnología (ver Experience).
-// Los años se calculan en tiempo real, no son un número inventado.
-const SKILL_BARS = [
-  { name: 'React / Next.js', since: '2024-06' },
-  { name: 'Node.js / Express', since: '2024-06' },
-  { name: 'SQL / Databases', since: '2021-09' },
-  { name: 'TypeScript', since: '2025-06' },
-  { name: 'Python', since: '2025-07' },
-]
-
-function yearsSince(dateStr: string): number {
-  const [y, m] = dateStr.split('-').map(Number)
-  const start = new Date(y, m - 1, 1)
-  const now = new Date()
-  const months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth())
-  return Math.max(0, months / 12)
-}
 
 const TYPE_COLORS: Record<string, string> = {
   work: '#00e5ff',
@@ -148,8 +129,7 @@ const CSS = `
   /* ── Zen Dots para títulos de certificados, Audiowide para el nombre ── */
   .hero-hi, .hero-desc, .hero-desc-toggle, .sec-body, .htag, .cat-chip, .lang-chip,
   .proj-desc, .proj-tag, .proj-badge, .proj-link, .exp-highlights li, .exp-dates,
-  .exp-company, .contact-value, .contact-label, .page-footer, .footer-links a,
-  .bar-name, .bar-pct {
+  .exp-company, .contact-value, .contact-label, .page-footer, .footer-links a {
     font-family: var(--font-anta), sans-serif;
   }
 
@@ -342,27 +322,6 @@ const CSS = `
     color: var(--text-muted);
     border: 1px solid color-mix(in srgb, var(--text) 9%, transparent);
   }
-
-  /* skill bars */
-  .bar-list { display: flex; flex-direction: column; gap: 1rem; }
-  .bar-item { display: flex; flex-direction: column; gap: 0.36rem; }
-  .bar-header { display: flex; justify-content: space-between; align-items: center; }
-  .bar-name {
-    font-size: 0.86rem; font-weight: 600; color: var(--text);
-    display: flex; align-items: center; gap: 0.45rem;
-  }
-  .dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    background: var(--accent1); box-shadow: 0 0 5px var(--accent1); flex-shrink: 0;
-  }
-  .bar-pct { font-size: 0.78rem; font-weight: 700; color: var(--accent1); font-family: monospace; }
-  .bar-track { height: 4px; background: color-mix(in srgb, var(--accent1) 8%, transparent); border-radius: 20px; overflow: hidden; }
-  .bar-fill {
-    height: 100%; border-radius: 20px; background: var(--bar-grad);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--accent1) 35%, transparent);
-    animation: fill 1.6s cubic-bezier(.4,0,.2,1) forwards; width: 0;
-  }
-  @keyframes fill { from { width: 0; } to { width: var(--w); } }
 
   /* language chips */
   .lang-chips { display: flex; flex-wrap: wrap; gap: 0.42rem; margin-top: 1.4rem; }
@@ -657,27 +616,6 @@ export default function HomeClient({
               <p className="sec-tag">{t.techStack}</p>
               <h2 className="sec-h2">{t.myPrefix} <span className="accent-word">{t.skillsWord}</span></h2>
               <p className="sec-body">{profile.summary[locale].slice(0, 240)}&hellip;</p>
-
-              <div className="bar-list">
-                {(() => {
-                  const withYears = SKILL_BARS.map(s => ({ ...s, years: yearsSince(s.since) }))
-                  const maxYears = Math.max(...withYears.map(s => s.years))
-                  return withYears.map(({ name, years }) => (
-                    <div key={name} className="bar-item">
-                      <div className="bar-header">
-                        <span className="bar-name"><span className="dot" />{name}</span>
-                        <span className="bar-pct">{Math.floor(years)}+ {locale === 'en' ? 'yrs' : 'años'}</span>
-                      </div>
-                      <div className="bar-track">
-                        <div
-                          className="bar-fill"
-                          style={{ '--w': `${(years / maxYears) * 100}%` } as CSSProperties & { '--w': string }}
-                        />
-                      </div>
-                    </div>
-                  ))
-                })()}
-              </div>
 
               <div className="lang-chips">
                 {skills.programming_languages.map(l => (
