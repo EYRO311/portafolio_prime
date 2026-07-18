@@ -27,6 +27,21 @@ const PAPER_WIDTH = 480;
 const PADDING_X = 42;
 const ROW_HEIGHT = 40;
 
+// Textura real (public/receipt-paper.png): 887x1774px, borde recto arriba, dentado abajo.
+const PAPER_IMG_SRC = "/receipt-paper.png";
+const PAPER_IMG_NATURAL_WIDTH = 887;
+const PAPER_IMG_NATURAL_HEIGHT = 1774;
+const PAPER_IMG_EDGE_SLICE = 200; // px de la imagen original reservados para cada borde
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
 function truncateToWidth(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
   if (ctx.measureText(text).width <= maxWidth) return text;
   let truncated = text;
@@ -36,27 +51,26 @@ function truncateToWidth(ctx: CanvasRenderingContext2D, text: string, maxWidth: 
   return `${truncated}…`;
 }
 
-function drawNoise(ctx: CanvasRenderingContext2D, width: number, height: number) {
-  const dots = Math.floor((width * height) / 90);
-  for (let i = 0; i < dots; i++) {
-    const x = Math.random() * width;
-    const y = Math.random() * height;
-    ctx.fillStyle = `rgba(0,0,0,${(Math.random() * 0.05).toFixed(3)})`;
-    ctx.fillRect(x, y, 1, 1);
-  }
-}
+function drawPaperBackground(ctx: CanvasRenderingContext2D, img: HTMLImageElement, width: number, height: number) {
+  const scale = width / PAPER_IMG_NATURAL_WIDTH;
+  const edgeDrawHeight = PAPER_IMG_EDGE_SLICE * scale;
+  const middleDrawHeight = Math.max(height - edgeDrawHeight * 2, 0);
+  const middleSrcHeight = PAPER_IMG_NATURAL_HEIGHT - PAPER_IMG_EDGE_SLICE * 2;
 
-function drawJaggedEdge(ctx: CanvasRenderingContext2D, width: number, y: number, teeth = 22) {
-  const toothWidth = width / teeth;
-  ctx.beginPath();
-  ctx.moveTo(0, y);
-  for (let i = 0; i < teeth; i++) {
-    const x1 = i * toothWidth + toothWidth / 2;
-    const x2 = (i + 1) * toothWidth;
-    ctx.lineTo(x1, y + 7);
-    ctx.lineTo(x2, y);
-  }
-  ctx.lineTo(width, y);
+  // Borde superior (recto)
+  ctx.drawImage(img, 0, 0, PAPER_IMG_NATURAL_WIDTH, PAPER_IMG_EDGE_SLICE, 0, 0, width, edgeDrawHeight);
+  // Centro (estirado verticalmente segun la cantidad de tracks)
+  ctx.drawImage(
+    img,
+    0, PAPER_IMG_EDGE_SLICE, PAPER_IMG_NATURAL_WIDTH, middleSrcHeight,
+    0, edgeDrawHeight, width, middleDrawHeight
+  );
+  // Borde inferior (dentado)
+  ctx.drawImage(
+    img,
+    0, PAPER_IMG_NATURAL_HEIGHT - PAPER_IMG_EDGE_SLICE, PAPER_IMG_NATURAL_WIDTH, PAPER_IMG_EDGE_SLICE,
+    0, height - edgeDrawHeight, width, edgeDrawHeight
+  );
 }
 
 function drawBarcode(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
@@ -78,6 +92,8 @@ async function drawReceipt(tracks: Track[], rangeLabel: string): Promise<HTMLCan
   const rowsHeight = tracks.length * ROW_HEIGHT;
   const height = headerHeight + rowsHeight + footerHeight;
 
+  const paperImg = await loadImage(PAPER_IMG_SRC);
+
   const canvas = document.createElement("canvas");
   const scale = 2;
   canvas.width = PAPER_WIDTH * scale;
@@ -85,20 +101,7 @@ async function drawReceipt(tracks: Track[], rangeLabel: string): Promise<HTMLCan
   const ctx = canvas.getContext("2d")!;
   ctx.scale(scale, scale);
 
-  // Paper background
-  ctx.fillStyle = "#f6f3ea";
-  ctx.beginPath();
-  ctx.moveTo(0, 8);
-  ctx.quadraticCurveTo(0, 0, 8, 0);
-  ctx.lineTo(PAPER_WIDTH - 8, 0);
-  ctx.quadraticCurveTo(PAPER_WIDTH, 0, PAPER_WIDTH, 8);
-  ctx.lineTo(PAPER_WIDTH, height - 20);
-  drawJaggedEdge(ctx, PAPER_WIDTH, height - 12);
-  ctx.lineTo(0, height - 20);
-  ctx.closePath();
-  ctx.fill();
-
-  drawNoise(ctx, PAPER_WIDTH, height);
+  drawPaperBackground(ctx, paperImg, PAPER_WIDTH, height);
 
   ctx.fillStyle = "#1a1a1a";
   ctx.textAlign = "center";
