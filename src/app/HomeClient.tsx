@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type MouseEvent } from 'react'
+import { useState, useEffect, type MouseEvent } from 'react'
 import { Audiowide, Anta, Zen_Dots, Asimovian } from 'next/font/google'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 import type { Profile } from '@/src/lib/data/profile'
@@ -14,6 +14,18 @@ const asimovian = Asimovian({ weight: '400', style: 'normal', subsets: ['latin']
 const fontVars = `${audiowide.variable} ${anta.variable} ${zenDots.variable} ${asimovian.variable}`
 
 const DESC_PREVIEW_LENGTH = 280
+
+function toEmbedUrl(url: string): string {
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
+  if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`
+  return url
+}
+
+function getPreviewSource(p: Project): string | null {
+  if (p.live) return p.live
+  if (p.certificateUrl && p.certificateUrl.includes('drive.google.com')) return p.certificateUrl
+  return null
+}
 
 const TYPE_COLORS: Record<string, string> = {
   work: '#00e5ff',
@@ -51,6 +63,9 @@ const UI = {
     repo: '↳ Repo',
     live: '↳ Live ↗',
     certificateLink: '↳ Certificate ↗',
+    preview: '↳ Preview',
+    openInNewTab: 'Open in new tab ↗',
+    closePreview: 'Close',
     privateConfidential: 'Private / Confidential',
     getInTouch: 'Get in touch',
     contactMeWord: 'Me',
@@ -80,6 +95,9 @@ const UI = {
     repo: '↳ Repo',
     live: '↳ Demo ↗',
     certificateLink: '↳ Certificado ↗',
+    preview: '↳ Vista previa',
+    openInNewTab: 'Abrir en pestaña nueva ↗',
+    closePreview: 'Cerrar',
     privateConfidential: 'Privado / Confidencial',
     getInTouch: 'Hablemos',
     contactMeWord: 'Contacto',
@@ -419,6 +437,39 @@ const CSS = `
   .proj-links { display: flex; gap: 0.7rem; }
   .proj-link { font-size: 0.77rem; font-weight: 600; color: var(--text-subtle); text-decoration: none; transition: color 0.2s; }
   .proj-link:hover { color: var(--accent1); }
+  .proj-link-btn { background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
+
+  /* ════════════ PREVIEW MODAL ════════════ */
+  .preview-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: color-mix(in srgb, #000 72%, transparent);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+  }
+  .preview-modal {
+    width: 100%; max-width: 960px; height: min(80vh, 720px);
+    background: var(--bg-card, #0a0a18); border-radius: 16px;
+    border: 1px solid color-mix(in srgb, var(--accent1) 24%, transparent);
+    box-shadow: 0 20px 60px color-mix(in srgb, #000 50%, transparent);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .preview-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.85rem 1.1rem; border-bottom: 1px solid color-mix(in srgb, var(--accent1) 14%, transparent);
+    gap: 1rem;
+  }
+  .preview-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+  .preview-actions { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
+  .preview-actions a { font-size: 0.78rem; font-weight: 600; color: var(--accent1); text-decoration: none; }
+  .preview-actions a:hover { color: var(--accent2); }
+  .preview-close {
+    background: none; border: none; cursor: pointer; color: var(--text-subtle);
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; transition: all 0.2s;
+  }
+  .preview-close:hover { color: var(--text); background: color-mix(in srgb, var(--accent1) 10%, transparent); }
+  .preview-modal iframe { flex: 1; width: 100%; border: none; background: #fff; }
 
   /* ════════════ CONTACT ════════════ */
   .contact-wrap { width: 100%; max-width: 780px; }
@@ -524,6 +575,16 @@ export default function HomeClient({
   const t = UI[locale]
   const [emailCopied, setEmailCopied] = useState(false)
   const [descExpanded, setDescExpanded] = useState(false)
+  const [previewProject, setPreviewProject] = useState<Project | null>(null)
+
+  useEffect(() => {
+    if (!previewProject) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPreviewProject(null)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [previewProject])
 
   const firstName = profile.name.split(' ')[0]
   const shortRole = profile.role[locale].split('|')[0].trim()
@@ -683,6 +744,7 @@ export default function HomeClient({
             <div className="proj-grid">
               {projects.map(p => {
                 const accent = TYPE_COLORS[p.type] ?? 'var(--accent1)'
+                const previewSource = getPreviewSource(p)
                 return (
                   <article key={p.slug} className="proj-card">
                     <div className="proj-top">
@@ -699,6 +761,11 @@ export default function HomeClient({
                       {p.stack.map(tech => <span key={tech} className="proj-tag">{tech}</span>)}
                     </div>
                     <div className="proj-links">
+                      {previewSource && (
+                        <button type="button" className="proj-link proj-link-btn" onClick={() => setPreviewProject(p)}>
+                          {t.preview}
+                        </button>
+                      )}
                       {p.repo && <a href={p.repo} className="proj-link" target="_blank" rel="noopener">{t.repo}</a>}
                       {p.live && <a href={p.live} className="proj-link" target="_blank" rel="noopener">{t.live}</a>}
                       {p.certificateUrl && <a href={p.certificateUrl} className="proj-link" target="_blank" rel="noopener">{t.certificateLink}</a>}
@@ -768,6 +835,28 @@ export default function HomeClient({
         </footer>
 
       </main>
+
+      {previewProject && (() => {
+        const source = getPreviewSource(previewProject)
+        if (!source) return null
+        const embedSrc = toEmbedUrl(source)
+        return (
+          <div className="preview-overlay" onClick={() => setPreviewProject(null)}>
+            <div className="preview-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="preview-header">
+                <span className="preview-title">{previewProject.title[locale]}</span>
+                <div className="preview-actions">
+                  <a href={source} target="_blank" rel="noopener">{t.openInNewTab}</a>
+                  <button type="button" className="preview-close" aria-label={t.closePreview} onClick={() => setPreviewProject(null)}>
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <iframe src={embedSrc} title={previewProject.title[locale]} allow="clipboard-write" />
+            </div>
+          </div>
+        )
+      })()}
     </>
   )
 }
