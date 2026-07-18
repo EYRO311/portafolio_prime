@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { useTheme } from "@/src/app/components/utils/ThemeContext";
 import SpotifyPlayer from "@/src/app/components/music/SpotifyPlayer";
+import RetroPanel from "@/src/app/components/music/RetroPanel";
+import Cover from "@/src/app/components/music/cover";
+import { RETRO, retroMono } from "@/src/app/components/music/retroTheme";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -92,47 +94,12 @@ function formatDate(value?: string | null) {
   });
 }
 
-function Cover({
-  src,
-  alt,
-  className = "h-14 w-14",
-  dark,
-}: {
-  src: string | null;
-  alt: string;
-  className?: string;
-  dark?: boolean;
-}) {
-  if (!src) {
-    return (
-      <div
-        className={`${className} flex items-center justify-center rounded-xl text-xs opacity-60`}
-        style={{
-          border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(0,0,0,0.10)",
-          background: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)",
-          color: dark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)",
-        }}
-      >
-        No image
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={src}
-      alt={alt}
-      className={`${className} rounded-xl object-cover`}
-      style={{
-        border: dark ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(0,0,0,0.10)",
-      }}
-    />
-  );
-}
+const rowStyle = {
+  border: `1px solid ${RETRO.border}`,
+  background: RETRO.panelAlt,
+};
 
 export default function MusicClient() {
-  const { darkMode: dark } = useTheme();
-
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [loadedTimeRange, setLoadedTimeRange] = useState<TimeRange | null>(null);
   const [data, setData] = useState<DashboardResponse | null>(null);
@@ -144,21 +111,6 @@ export default function MusicClient() {
 
   const inFlightRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
-
-  // Theme-aware class helpers
-  const card = {
-    border: dark ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(0,0,0,0.09)",
-    background: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",
-    color: dark ? "#ffffff" : "#0a0a0a",
-  };
-
-  const cardInner = {
-    border: dark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.07)",
-    background: dark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
-  };
-
-  const muted = dark ? "rgba(255,255,255,0.60)" : "rgba(0,0,0,0.50)";
-  const subtle = dark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.70)";
 
   const loadDashboard = useCallback(async () => {
     if (inFlightRef.current) return;
@@ -231,46 +183,36 @@ export default function MusicClient() {
 
   if (!isAuthed) {
     return (
-      <div
-        className="rounded-3xl p-6"
-        style={{ ...card, border: card.border }}
-      >
-        <h2 className="mb-2 text-2xl font-semibold" style={{ color: card.color }}>
-          Conecta tu Spotify
-        </h2>
-        <p className="mb-4" style={{ color: subtle }}>
+      <RetroPanel title="CONNECT SPOTIFY" accent={RETRO.pink} className={retroMono.className}>
+        <p className="mb-4" style={{ fontSize: "1.15rem", color: RETRO.textSubtle }}>
           Necesito permisos para leer top tracks, top artists, reproducción actual,
           historial reciente y playlists.
         </p>
 
         <a
           href="/auth/spotify/login"
-          className="inline-flex rounded-xl px-4 py-2 font-medium transition"
-          style={{
-            border: card.border,
-            color: card.color,
-            background: "transparent",
-          }}
+          className="inline-flex rounded-lg px-4 py-2 font-semibold transition hover:opacity-85"
+          style={{ border: `2px solid ${RETRO.cyan}`, color: RETRO.cyan, background: "transparent" }}
         >
           Conectar Spotify
         </a>
-      </div>
+      </RetroPanel>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className={`${retroMono.className} space-y-8`}>
       <SpotifyPlayer />
 
       {/* Control section */}
-      <section className="rounded-3xl p-6" style={card}>
+      <RetroPanel title="CONTROLS" accent={RETRO.yellow}>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-sm" style={{ color: muted }}>Spotify dashboard</p>
-            <h2 className="text-2xl font-semibold" style={{ color: card.color }}>
+            <p style={{ fontSize: "1rem", color: RETRO.textMuted }}>Spotify dashboard</p>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: RETRO.text }}>
               {data?.profile.name ?? "Carga manual"}
             </h2>
-            <p className="text-sm" style={{ color: subtle }}>
+            <p style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
               {hasData
                 ? `Última actualización: ${formatDate(data?.generatedAt)}`
                 : "No se hará ninguna solicitud hasta que presiones un botón."}
@@ -283,21 +225,12 @@ export default function MusicClient() {
                 key={value}
                 onClick={() => setTimeRange(value)}
                 disabled={loading || refreshing}
-                className="rounded-xl px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-lg px-3 py-2 transition disabled:cursor-not-allowed disabled:opacity-60"
                 style={{
-                  border:
-                    timeRange === value
-                      ? dark
-                        ? "1px solid rgba(255,255,255,0.30)"
-                        : "1px solid rgba(0,0,0,0.28)"
-                      : card.border,
-                  background:
-                    timeRange === value
-                      ? dark
-                        ? "rgba(255,255,255,0.10)"
-                        : "rgba(0,0,0,0.07)"
-                      : "transparent",
-                  color: card.color,
+                  border: `2px solid ${timeRange === value ? RETRO.cyan : RETRO.border}`,
+                  background: timeRange === value ? "rgba(5,217,232,0.15)" : "transparent",
+                  color: timeRange === value ? RETRO.cyan : RETRO.text,
+                  fontSize: "0.95rem",
                 }}
               >
                 {timeRangeLabels[value]}
@@ -307,12 +240,8 @@ export default function MusicClient() {
             <button
               onClick={loadDashboard}
               disabled={loading || refreshing}
-              className="rounded-xl px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-60"
-              style={{
-                border: card.border,
-                color: card.color,
-                background: "transparent",
-              }}
+              className="rounded-lg px-3 py-2 transition disabled:cursor-not-allowed disabled:opacity-60"
+              style={{ border: `2px solid ${RETRO.pink}`, color: RETRO.pink, background: "transparent", fontSize: "0.95rem" }}
             >
               {loading
                 ? "Cargando..."
@@ -328,7 +257,7 @@ export default function MusicClient() {
         </div>
 
         {selectedRangeChanged ? (
-          <p className="mt-4 text-sm" style={{ color: dark ? "#fcd34d" : "#b45309" }}>
+          <p className="mt-4" style={{ fontSize: "1rem", color: RETRO.yellow }}>
             Cambiaste el rango a <strong>{timeRangeLabels[timeRange]}</strong>, pero los
             datos en pantalla siguen mostrando{" "}
             <strong>{timeRangeLabels[loadedTimeRange as TimeRange]}</strong> hasta que
@@ -337,82 +266,69 @@ export default function MusicClient() {
         ) : null}
 
         {error ? (
-          <p className="mt-4 text-sm" style={{ color: dark ? "#f87171" : "#dc2626" }}>
+          <p className="mt-4" style={{ fontSize: "1rem", color: RETRO.error }}>
             {error}
           </p>
         ) : null}
-      </section>
+      </RetroPanel>
 
       {!hasData && !loading ? (
-        <section className="rounded-3xl p-6" style={card}>
-          <h3 className="mb-2 text-xl font-semibold" style={{ color: card.color }}>
+        <RetroPanel title="READY" accent={RETRO.purple}>
+          <h3 className="mb-2" style={{ fontSize: "1.3rem", fontWeight: 700, color: RETRO.text }}>
             Listo para consultar Spotify
           </h3>
-          <p className="text-sm" style={{ color: subtle }}>
+          <p style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
             Selecciona un rango y presiona <strong>Cargar dashboard</strong>.
           </p>
           {!hasTriedLoad ? (
-            <p className="mt-3 text-sm" style={{ color: muted }}>
+            <p className="mt-3" style={{ fontSize: "0.95rem", color: RETRO.textMuted }}>
               No hay auto-fetch, no hay polling y no se consulta al cambiar tabs.
             </p>
           ) : null}
-        </section>
+        </RetroPanel>
       ) : null}
 
       {loading && !hasData ? (
-        <p style={{ color: subtle, opacity: 0.7 }}>Cargando dashboard de Spotify...</p>
+        <p style={{ color: RETRO.textSubtle, fontSize: "1.1rem" }}>Cargando dashboard de Spotify...</p>
       ) : null}
 
       {hasData ? (
         <>
           {/* Profile + Currently playing */}
           <section className="grid gap-6 lg:grid-cols-2">
-            <article className="rounded-3xl p-6" style={card}>
-              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
-                Perfil
-              </h3>
-
+            <RetroPanel title="PROFILE" accent={RETRO.cyan}>
               <div className="mb-4 flex items-center gap-4">
-                <Cover
-                  src={data?.profile.image || null}
-                  alt={data?.profile.name || ""}
-                  className="h-16 w-16"
-                  dark={dark}
-                />
+                <Cover src={data?.profile.image || null} alt={data?.profile.name || ""} className="h-16 w-16" />
                 <div>
-                  <h4 className="text-lg font-semibold" style={{ color: card.color }}>
+                  <h4 style={{ fontSize: "1.2rem", fontWeight: 700, color: RETRO.text }}>
                     {data?.profile.name}
                   </h4>
-                  <p className="text-sm" style={{ color: subtle }}>
+                  <p style={{ fontSize: "0.95rem", color: RETRO.textSubtle }}>
                     {data?.profile.product ?? "Cuenta Spotify"} ·{" "}
                     {data?.profile.followers} followers
                   </p>
                 </div>
               </div>
 
-              <div className="space-y-2 text-sm">
-                <p style={{ color: card.color }}>
-                  <span style={{ color: muted }}>Email:</span>{" "}
+              <div className="space-y-1" style={{ fontSize: "1rem" }}>
+                <p style={{ color: RETRO.text }}>
+                  <span style={{ color: RETRO.textMuted }}>Email:</span>{" "}
                   {data?.profile.email ?? "No disponible"}
                 </p>
-                <p style={{ color: card.color }}>
-                  <span style={{ color: muted }}>País:</span>{" "}
+                <p style={{ color: RETRO.text }}>
+                  <span style={{ color: RETRO.textMuted }}>País:</span>{" "}
                   {data?.profile.country ?? "No disponible"}
                 </p>
-                <p style={{ color: card.color }}>
-                  <span style={{ color: muted }}>Plan:</span>{" "}
+                <p style={{ color: RETRO.text }}>
+                  <span style={{ color: RETRO.textMuted }}>Plan:</span>{" "}
                   {data?.profile.product ?? "No disponible"}
                 </p>
               </div>
-            </article>
+            </RetroPanel>
 
-            <article className="rounded-3xl p-6" style={card}>
-              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
-                Currently playing
-              </h3>
-
+            <RetroPanel title="CURRENTLY PLAYING" accent={RETRO.pink}>
               {!data?.playback?.item ? (
-                <div className="space-y-2 text-sm" style={{ color: subtle }}>
+                <div className="space-y-2" style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                   <p>No hay reproducción activa en este momento.</p>
                   {data?.playback?.device ? (
                     <p>
@@ -423,26 +339,21 @@ export default function MusicClient() {
                 </div>
               ) : (
                 <div className="flex gap-4">
-                  <Cover
-                    src={data.playback.item.image}
-                    alt={data.playback.item.name}
-                    className="h-20 w-20"
-                    dark={dark}
-                  />
+                  <Cover src={data.playback.item.image} alt={data.playback.item.name} className="h-20 w-20" />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm" style={{ color: muted }}>
+                    <p style={{ fontSize: "0.9rem", color: RETRO.textMuted }}>
                       {data.playback.isPlaying ? "Reproduciendo" : "En pausa"}
                     </p>
-                    <h4 className="truncate text-lg font-semibold" style={{ color: card.color }}>
+                    <h4 className="truncate" style={{ fontSize: "1.2rem", fontWeight: 700, color: RETRO.text }}>
                       {data.playback.item.name}
                     </h4>
-                    <p className="truncate text-sm" style={{ color: subtle }}>
+                    <p className="truncate" style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                       {data.playback.item.artists}
                     </p>
-                    <p className="truncate text-sm" style={{ color: muted }}>
+                    <p className="truncate" style={{ fontSize: "0.9rem", color: RETRO.textMuted }}>
                       {data.playback.item.album}
                     </p>
-                    <div className="mt-3 text-sm" style={{ color: subtle }}>
+                    <div className="mt-3" style={{ fontSize: "0.95rem", color: RETRO.textSubtle }}>
                       <p>
                         Progreso: {formatDuration(data.playback.progressMs)} /{" "}
                         {formatDuration(data.playback.item.durationMs)}
@@ -457,8 +368,8 @@ export default function MusicClient() {
                         href={data.playback.item.spotifyUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-3 inline-flex text-sm underline"
-                        style={{ color: "#1e8bc6" }}
+                        className="mt-3 inline-flex underline"
+                        style={{ color: RETRO.cyan, fontSize: "1rem" }}
                       >
                         Abrir en Spotify
                       </a>
@@ -466,31 +377,23 @@ export default function MusicClient() {
                   </div>
                 </div>
               )}
-            </article>
+            </RetroPanel>
           </section>
 
           {/* Top Artists */}
-          <section className="rounded-3xl p-6" style={card}>
-            <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
-              Top artists
-            </h3>
+          <RetroPanel title="TOP ARTISTS" accent={RETRO.yellow}>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {data?.topArtists.map((artist, index) => (
-                <article key={artist.id} className="rounded-2xl p-4" style={cardInner}>
-                  <Cover
-                    src={artist.image}
-                    alt={artist.name}
-                    className="mb-3 h-28 w-full"
-                    dark={dark}
-                  />
-                  <p className="text-xs" style={{ color: muted }}>#{index + 1}</p>
-                  <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                <article key={artist.id} className="rounded-lg p-4" style={rowStyle}>
+                  <Cover src={artist.image} alt={artist.name} className="mb-3 h-28 w-full" />
+                  <p style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>#{index + 1}</p>
+                  <h4 className="truncate" style={{ fontWeight: 700, color: RETRO.text }}>
                     {artist.name}
                   </h4>
-                  <p className="mt-1 text-xs" style={{ color: subtle }}>
+                  <p className="mt-1 truncate" style={{ fontSize: "0.85rem", color: RETRO.textSubtle }}>
                     {artist.genres.slice(0, 2).join(", ") || "Sin géneros"}
                   </p>
-                  <p className="mt-1 text-xs" style={{ color: muted }}>
+                  <p className="mt-1" style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>
                     {artist.followers} followers
                   </p>
                   {artist.spotifyUrl ? (
@@ -498,8 +401,8 @@ export default function MusicClient() {
                       href={artist.spotifyUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-3 inline-flex text-sm underline"
-                      style={{ color: "#1e8bc6" }}
+                      className="mt-3 inline-flex underline"
+                      style={{ color: RETRO.cyan, fontSize: "0.95rem" }}
                     >
                       Ver artista
                     </a>
@@ -507,43 +410,30 @@ export default function MusicClient() {
                 </article>
               ))}
             </div>
-          </section>
+          </RetroPanel>
 
           {/* Top Tracks */}
-          <section className="rounded-3xl p-6" style={card}>
-            <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
-              Top tracks
-            </h3>
+          <RetroPanel title="TOP TRACKS" accent={RETRO.purple}>
             <div className="grid gap-3">
               {data?.topTracks.map((track, index) => (
-                <article
-                  key={track.id}
-                  className="flex items-center gap-4 rounded-2xl p-4"
-                  style={cardInner}
-                >
-                  <Cover src={track.image} alt={track.name} dark={dark} />
+                <article key={track.id} className="flex items-center gap-4 rounded-lg p-4" style={rowStyle}>
+                  <Cover src={track.image} alt={track.name} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs" style={{ color: muted }}>#{index + 1}</p>
-                    <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                    <p style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>#{index + 1}</p>
+                    <h4 className="truncate" style={{ fontWeight: 700, color: RETRO.text }}>
                       {track.name}
                     </h4>
-                    <p className="truncate text-sm" style={{ color: subtle }}>
+                    <p className="truncate" style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                       {track.artists}
                     </p>
-                    <p className="truncate text-sm" style={{ color: muted }}>
+                    <p className="truncate" style={{ fontSize: "0.9rem", color: RETRO.textMuted }}>
                       {track.album}
                     </p>
                   </div>
-                  <div className="text-right text-sm" style={{ color: subtle }}>
+                  <div className="text-right" style={{ fontSize: "0.95rem", color: RETRO.textSubtle }}>
                     <p>{formatDuration(track.durationMs)}</p>
                     {track.spotifyUrl ? (
-                      <a
-                        href={track.spotifyUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="underline"
-                        style={{ color: "#1e8bc6" }}
-                      >
+                      <a href={track.spotifyUrl} target="_blank" rel="noreferrer" className="underline" style={{ color: RETRO.cyan }}>
                         Abrir
                       </a>
                     ) : null}
@@ -551,35 +441,28 @@ export default function MusicClient() {
                 </article>
               ))}
             </div>
-          </section>
+          </RetroPanel>
 
           {/* History + Playlists */}
           <section className="grid gap-6 lg:grid-cols-2">
-            <article className="rounded-3xl p-6" style={card}>
-              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
-                Historial reciente
-              </h3>
+            <RetroPanel title="RECENT HISTORY" accent={RETRO.cyan}>
               <div className="grid gap-3">
                 {data?.recentlyPlayed.length === 0 ? (
-                  <p className="text-sm" style={{ color: subtle }}>
+                  <p style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                     No hay historial reciente disponible.
                   </p>
                 ) : (
                   data?.recentlyPlayed.map((track) => (
-                    <article
-                      key={`${track.id}-${track.playedAt}`}
-                      className="flex items-center gap-4 rounded-2xl p-4"
-                      style={cardInner}
-                    >
-                      <Cover src={track.image} alt={track.name} dark={dark} />
+                    <article key={`${track.id}-${track.playedAt}`} className="flex items-center gap-4 rounded-lg p-4" style={rowStyle}>
+                      <Cover src={track.image} alt={track.name} />
                       <div className="min-w-0 flex-1">
-                        <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                        <h4 className="truncate" style={{ fontWeight: 700, color: RETRO.text }}>
                           {track.name}
                         </h4>
-                        <p className="truncate text-sm" style={{ color: subtle }}>
+                        <p className="truncate" style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                           {track.artists}
                         </p>
-                        <p className="truncate text-xs" style={{ color: muted }}>
+                        <p className="truncate" style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>
                           {formatDate(track.playedAt)}
                         </p>
                       </div>
@@ -587,33 +470,26 @@ export default function MusicClient() {
                   ))
                 )}
               </div>
-            </article>
+            </RetroPanel>
 
-            <article className="rounded-3xl p-6" style={card}>
-              <h3 className="mb-4 text-xl font-semibold" style={{ color: card.color }}>
-                Playlists seguidas / creadas
-              </h3>
+            <RetroPanel title="PLAYLISTS" accent={RETRO.pink}>
               <div className="grid gap-3">
                 {data?.playlists.length === 0 ? (
-                  <p className="text-sm" style={{ color: subtle }}>
+                  <p style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                     No hay playlists disponibles.
                   </p>
                 ) : (
                   data?.playlists.map((playlist) => (
-                    <article
-                      key={playlist.id}
-                      className="flex items-center gap-4 rounded-2xl p-4"
-                      style={cardInner}
-                    >
-                      <Cover src={playlist.image} alt={playlist.name} dark={dark} />
+                    <article key={playlist.id} className="flex items-center gap-4 rounded-lg p-4" style={rowStyle}>
+                      <Cover src={playlist.image} alt={playlist.name} />
                       <div className="min-w-0 flex-1">
-                        <h4 className="truncate font-semibold" style={{ color: card.color }}>
+                        <h4 className="truncate" style={{ fontWeight: 700, color: RETRO.text }}>
                           {playlist.name}
                         </h4>
-                        <p className="truncate text-sm" style={{ color: subtle }}>
+                        <p className="truncate" style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                           {playlist.owner} · {playlist.tracksTotal} tracks
                         </p>
-                        <p className="truncate text-xs" style={{ color: muted }}>
+                        <p className="truncate" style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>
                           {playlist.collaborative
                             ? "Collaborative"
                             : playlist.public === true
@@ -624,13 +500,7 @@ export default function MusicClient() {
                         </p>
                       </div>
                       {playlist.spotifyUrl ? (
-                        <a
-                          href={playlist.spotifyUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-sm underline"
-                          style={{ color: "#1e8bc6" }}
-                        >
+                        <a href={playlist.spotifyUrl} target="_blank" rel="noreferrer" className="underline" style={{ color: RETRO.cyan }}>
                           Abrir
                         </a>
                       ) : null}
@@ -638,7 +508,7 @@ export default function MusicClient() {
                   ))
                 )}
               </div>
-            </article>
+            </RetroPanel>
           </section>
         </>
       ) : null}

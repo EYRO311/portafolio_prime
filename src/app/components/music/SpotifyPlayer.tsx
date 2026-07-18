@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useTheme } from "@/src/app/components/utils/ThemeContext";
+import RetroPanel from "@/src/app/components/music/RetroPanel";
+import { RETRO, retroMono } from "@/src/app/components/music/retroTheme";
 
 type TrackInfo = {
   id: string;
@@ -30,8 +31,13 @@ function formatMs(ms: number) {
 const POLL_INTERVAL = 5000;
 const TICK_INTERVAL = 1000;
 
+const btnStyle = {
+  border: `2px solid ${RETRO.border}`,
+  background: RETRO.panelAlt,
+  color: RETRO.text,
+};
+
 export default function SpotifyPlayer() {
-  const { darkMode: dark } = useTheme();
   const [status, setStatus] = useState<PlayerStatus>("loading");
   const [cmdError, setCmdError] = useState<string | null>(null);
   const [actionPending, setActionPending] = useState(false);
@@ -41,16 +47,6 @@ export default function SpotifyPlayer() {
   const [displayProgress, setDisplayProgress] = useState(0);
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const card = {
-    border: dark ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(0,0,0,0.09)",
-    background: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)",
-    color: dark ? "#ffffff" : "#0a0a0a",
-  };
-  const muted = dark ? "rgba(255,255,255,0.50)" : "rgba(0,0,0,0.42)";
-  const subtle = dark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.68)";
-  const btnBg = dark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
-  const btnBorder = dark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.10)";
 
   const fetchState = useCallback(async () => {
     try {
@@ -148,23 +144,17 @@ export default function SpotifyPlayer() {
 
   if (status === "loading") {
     return (
-      <div className="rounded-3xl p-5" style={card}>
-        <p className="text-xs font-semibold tracking-widest uppercase mb-1" style={{ color: muted }}>
-          Now playing
-        </p>
-        <p className="text-sm" style={{ color: muted }}>Conectando...</p>
-      </div>
+      <RetroPanel title="NOW PLAYING" accent={RETRO.cyan} className={retroMono.className}>
+        <p style={{ fontSize: "1rem", color: RETRO.textMuted }}>Conectando...</p>
+      </RetroPanel>
     );
   }
 
   if (status === "idle") {
     return (
-      <div className="rounded-3xl p-5" style={card}>
-        <p className="text-xs font-semibold tracking-widest uppercase mb-1" style={{ color: muted }}>
-          Now playing
-        </p>
-        <p className="text-sm" style={{ color: subtle }}>Sin reproducción activa en este momento.</p>
-      </div>
+      <RetroPanel title="NOW PLAYING" accent={RETRO.cyan} className={retroMono.className}>
+        <p style={{ fontSize: "1rem", color: RETRO.textSubtle }}>Sin reproducción activa en este momento.</p>
+      </RetroPanel>
     );
   }
 
@@ -173,32 +163,31 @@ export default function SpotifyPlayer() {
   const pct = duration > 0 ? Math.min((displayProgress / duration) * 100, 100) : 0;
 
   return (
-    <div className="rounded-3xl p-5" style={card}>
-      {/* Header row */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-semibold tracking-widest uppercase" style={{ color: muted }}>
-          Now playing
-        </p>
-        {ps.device && (
-          <span className="text-xs truncate max-w-[180px]" style={{ color: muted }}>
+    <RetroPanel
+      title="NOW PLAYING"
+      accent={RETRO.cyan}
+      className={retroMono.className}
+      actions={
+        ps.device ? (
+          <span className="truncate max-w-[180px]" style={{ fontSize: "0.85rem", color: "#160a26" }}>
             {ps.device.name} · {ps.device.type}
           </span>
-        )}
-      </div>
-
+        ) : undefined
+      }
+    >
       <div className="flex items-center gap-4">
         {/* Album art */}
         {ps.item?.image ? (
           <img
             src={ps.item.image}
             alt={ps.item.name}
-            className="h-20 w-20 rounded-2xl object-cover flex-shrink-0"
-            style={{ border: `1px solid ${btnBorder}` }}
+            className="h-20 w-20 rounded-lg object-cover flex-shrink-0"
+            style={{ border: `2px solid ${RETRO.border}` }}
           />
         ) : (
           <div
-            className="h-20 w-20 rounded-2xl flex-shrink-0 flex items-center justify-center"
-            style={{ border: `1px solid ${btnBorder}`, background: btnBg, color: muted, fontSize: 28 }}
+            className="h-20 w-20 rounded-lg flex-shrink-0 flex items-center justify-center"
+            style={{ border: `2px solid ${RETRO.border}`, background: RETRO.panelAlt, color: RETRO.textMuted, fontSize: 28 }}
           >
             ♪
           </div>
@@ -208,36 +197,40 @@ export default function SpotifyPlayer() {
         <div className="flex-1 min-w-0">
           {ps.item ? (
             <>
-              <h4 className="truncate font-semibold text-base leading-tight" style={{ color: card.color }}>
+              <h4 className="truncate" style={{ fontWeight: 700, fontSize: "1.15rem", lineHeight: 1.2, color: RETRO.text }}>
                 {ps.item.name}
               </h4>
-              <p className="truncate text-sm mt-0.5" style={{ color: subtle }}>
+              <p className="truncate mt-0.5" style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                 {ps.item.artists}
               </p>
-              <p className="truncate text-xs mt-0.5" style={{ color: muted }}>
+              <p className="truncate mt-0.5" style={{ fontSize: "0.9rem", color: RETRO.textMuted }}>
                 {ps.item.album}
               </p>
             </>
           ) : (
-            <p className="text-sm" style={{ color: subtle }}>Sin información de pista</p>
+            <p style={{ fontSize: "1rem", color: RETRO.textSubtle }}>Sin información de pista</p>
           )}
 
           {/* Progress bar */}
           <div className="mt-3 flex items-center gap-2">
-            <span className="text-xs tabular-nums w-8 text-right" style={{ color: muted }}>
+            <span className="tabular-nums w-8 text-right" style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>
               {formatMs(displayProgress)}
             </span>
             <div
-              className="relative flex-1 h-1.5 rounded-full cursor-pointer group"
-              style={{ background: dark ? "rgba(255,255,255,0.10)" : "rgba(0,0,0,0.08)" }}
+              className="relative flex-1 h-2 rounded-full cursor-pointer group"
+              style={{ background: RETRO.panelAlt, border: `1px solid ${RETRO.border}` }}
               onClick={handleProgressClick}
             >
               <div
                 className="absolute left-0 top-0 h-full rounded-full"
-                style={{ width: `${pct}%`, background: "#1DB954", transition: "width 0.3s linear" }}
+                style={{
+                  width: `${pct}%`,
+                  background: `linear-gradient(90deg, ${RETRO.pink}, ${RETRO.cyan})`,
+                  transition: "width 0.3s linear",
+                }}
               />
             </div>
-            <span className="text-xs tabular-nums w-8" style={{ color: muted }}>
+            <span className="tabular-nums w-8" style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>
               {formatMs(duration)}
             </span>
           </div>
@@ -247,8 +240,8 @@ export default function SpotifyPlayer() {
             <button
               onClick={() => sendAction("previous")}
               disabled={actionPending}
-              className="flex items-center justify-center rounded-xl w-8 h-8 text-base transition disabled:opacity-40"
-              style={{ border: `1px solid ${btnBorder}`, background: btnBg, color: card.color }}
+              className="flex items-center justify-center rounded-lg w-8 h-8 text-base transition disabled:opacity-40"
+              style={btnStyle}
               title="Anterior"
             >
               ⏮
@@ -257,8 +250,8 @@ export default function SpotifyPlayer() {
             <button
               onClick={() => sendAction(ps.isPlaying ? "pause" : "play")}
               disabled={actionPending}
-              className="flex items-center justify-center rounded-xl w-10 h-10 text-lg transition disabled:opacity-40"
-              style={{ border: `1px solid ${btnBorder}`, background: btnBg, color: card.color }}
+              className="flex items-center justify-center rounded-lg w-10 h-10 text-lg transition disabled:opacity-40"
+              style={{ ...btnStyle, border: `2px solid ${RETRO.pink}`, color: RETRO.pink }}
               title={ps.isPlaying ? "Pausar" : "Reproducir"}
             >
               {ps.isPlaying ? "⏸" : "▶"}
@@ -267,8 +260,8 @@ export default function SpotifyPlayer() {
             <button
               onClick={() => sendAction("next")}
               disabled={actionPending}
-              className="flex items-center justify-center rounded-xl w-8 h-8 text-base transition disabled:opacity-40"
-              style={{ border: `1px solid ${btnBorder}`, background: btnBg, color: card.color }}
+              className="flex items-center justify-center rounded-lg w-8 h-8 text-base transition disabled:opacity-40"
+              style={btnStyle}
               title="Siguiente"
             >
               ⏭
@@ -279,8 +272,8 @@ export default function SpotifyPlayer() {
                 href={ps.item.spotifyUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="ml-auto text-xs underline"
-                style={{ color: "#1DB954" }}
+                className="ml-auto underline"
+                style={{ color: RETRO.cyan, fontSize: "0.9rem" }}
               >
                 Abrir en Spotify ↗
               </a>
@@ -288,12 +281,12 @@ export default function SpotifyPlayer() {
           </div>
 
           {cmdError && (
-            <p className="mt-2 text-xs" style={{ color: dark ? "#f87171" : "#dc2626" }}>
+            <p className="mt-2" style={{ fontSize: "0.9rem", color: RETRO.error }}>
               {cmdError}
             </p>
           )}
         </div>
       </div>
-    </div>
+    </RetroPanel>
   );
 }

@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import MusicPageShell from "@/src/app/components/music/MusicPageShell";
 import TimeRangeTabs from "@/src/app/components/music/TimeRangeTabs";
 import PaginationControls from "@/src/app/components/music/PaginationControls";
-import { useTheme } from "@/src/app/components/utils/ThemeContext";
+import Cover from "@/src/app/components/music/cover";
+import { RETRO } from "@/src/app/components/music/retroTheme";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -40,7 +41,6 @@ function formatDuration(ms?: number) {
 }
 
 export default function TopTracksPage() {
-  const { darkMode: dark } = useTheme();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [meta, setMeta] = useState<ApiResponse["meta"] | null>(null);
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
@@ -79,14 +79,6 @@ export default function TopTracksPage() {
     run();
   }, [timeRange, offset]);
 
-  const card = {
-    border: dark ? "1px solid rgba(255,255,255,0.10)" : "1px solid rgba(0,0,0,0.09)",
-    background: dark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
-  };
-  const textMain = dark ? "#ffffff" : "#0a0a0a";
-  const textMuted = dark ? "rgba(255,255,255,0.60)" : "rgba(0,0,0,0.50)";
-  const textSubtle = dark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.70)";
-
   return (
     <MusicPageShell
       title="Tus top tracks"
@@ -100,55 +92,41 @@ export default function TopTracksPage() {
         />
       }
     >
-      {loading && <p style={{ color: textSubtle }}>Cargando...</p>}
+      {loading && <p style={{ color: RETRO.textSubtle }}>Cargando...</p>}
       {error && (
-        <p className="mb-6" style={{ color: dark ? "#f87171" : "#dc2626" }}>
+        <p className="mb-6" style={{ color: RETRO.error }}>
           {error}
         </p>
       )}
       {!loading && !error && tracks.length === 0 && (
-        <p style={{ color: textSubtle }}>No se encontraron tracks para este rango.</p>
+        <p style={{ color: RETRO.textSubtle }}>No se encontraron tracks para este rango.</p>
       )}
 
       <div className="grid gap-3">
         {tracks.map((track, index) => (
           <article
             key={track.id}
-            className="flex items-center gap-4 rounded-2xl p-4"
-            style={card}
+            className="flex items-center gap-4 rounded-lg p-4"
+            style={{ border: `1px solid ${RETRO.border}`, background: RETRO.panelAlt }}
           >
-            {track.image ? (
-              <img
-                src={track.image}
-                alt={track.name}
-                className="h-14 w-14 rounded-xl object-cover shrink-0"
-                style={{ border: card.border }}
-              />
-            ) : (
-              <div
-                className="h-14 w-14 rounded-xl flex items-center justify-center text-xs shrink-0"
-                style={{ ...card, color: textMuted }}
-              >
-                No img
-              </div>
-            )}
+            <Cover src={track.image} alt={track.name} className="h-14 w-14" />
 
             <div className="min-w-0 flex-1">
-              <p className="text-xs" style={{ color: textMuted }}>
+              <p style={{ fontSize: "0.85rem", color: RETRO.textMuted }}>
                 #{offset + index + 1}
               </p>
-              <h4 className="truncate font-semibold" style={{ color: textMain }}>
+              <h4 className="truncate font-semibold" style={{ color: RETRO.text }}>
                 {track.name}
               </h4>
-              <p className="truncate text-sm" style={{ color: textSubtle }}>
+              <p className="truncate" style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
                 {track.artists}
               </p>
-              <p className="truncate text-sm" style={{ color: textMuted }}>
+              <p className="truncate" style={{ fontSize: "0.9rem", color: RETRO.textMuted }}>
                 {track.album}
               </p>
             </div>
 
-            <div className="text-right text-sm shrink-0" style={{ color: textSubtle }}>
+            <div className="text-right shrink-0" style={{ fontSize: "0.95rem", color: RETRO.textSubtle }}>
               <p>{formatDuration(track.durationMs)}</p>
               {track.spotifyUrl && (
                 <a
@@ -156,7 +134,7 @@ export default function TopTracksPage() {
                   target="_blank"
                   rel="noreferrer"
                   className="underline"
-                  style={{ color: "#1e8bc6" }}
+                  style={{ color: RETRO.cyan }}
                 >
                   Abrir
                 </a>

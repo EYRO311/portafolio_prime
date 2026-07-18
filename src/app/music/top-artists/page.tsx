@@ -5,6 +5,7 @@ import MusicPageShell from "@/src/app/components/music/MusicPageShell";
 import TimeRangeTabs from "@/src/app/components/music/TimeRangeTabs";
 import PaginationControls from "@/src/app/components/music/PaginationControls";
 import ArtistCard from "@/src/app/components/music/ArtistCard";
+import { RETRO } from "@/src/app/components/music/retroTheme";
 
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
@@ -104,11 +105,11 @@ export default function TopArtistsPage() {
         />
       }
     >
-      {loading && <p>Cargando...</p>}
-      {error && <p className="mb-6 text-red-400">{error}</p>}
+      {loading && <p style={{ color: RETRO.textSubtle }}>Cargando...</p>}
+      {error && <p className="mb-6" style={{ color: RETRO.error }}>{error}</p>}
 
       {!loading && !error && artists.length === 0 && (
-        <p className="opacity-70">No se encontraron artistas para este rango.</p>
+        <p style={{ color: RETRO.textSubtle }}>No se encontraron artistas para este rango.</p>
       )}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">

@@ -1,3 +1,5 @@
+import { RETRO } from "@/src/app/components/music/retroTheme";
+
 type PaginationControlsProps = {
   hasPrevious?: boolean;
   hasNext?: boolean;
@@ -18,17 +20,19 @@ export default function PaginationControls({
       <button
         disabled={!hasPrevious}
         onClick={onPrevious}
-        className="rounded-xl border px-4 py-2 disabled:opacity-40"
+        className="rounded-lg px-4 py-2 disabled:opacity-40"
+        style={{ border: `2px solid ${RETRO.pink}`, color: RETRO.pink }}
       >
         Anterior
       </button>
 
-      <p className="text-sm opacity-70">{label}</p>
+      <p className="text-sm" style={{ color: RETRO.textSubtle }}>{label}</p>
 
       <button
         disabled={!hasNext}
         onClick={onNext}
-        className="rounded-xl border px-4 py-2 disabled:opacity-40"
+        className="rounded-lg px-4 py-2 disabled:opacity-40"
+        style={{ border: `2px solid ${RETRO.cyan}`, color: RETRO.cyan }}
       >
         Siguiente
       </button>

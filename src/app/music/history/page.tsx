@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import MusicPageShell from "@/src/app/components/music/MusicPageShell";
+import TrackRowCard from "@/src/app/components/music/TrackRowCard";
+import { RETRO } from "@/src/app/components/music/retroTheme";
 
 type Track = {
   id: string;
@@ -35,9 +38,6 @@ export default function HistoryPage() {
   const [nextBefore, setNextBefore] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // ASUMIDO:
-  // si tu carpeta route es /auth/spotify/recently_played usa este path.
-  // si la renombraste a recently-played, cambia solo esta línea.
   const API_PATH = "/auth/spotify/recently_played";
 
   useEffect(() => {
@@ -72,57 +72,34 @@ export default function HistoryPage() {
   }, [before]);
 
   return (
-    <main className="min-h-screen p-6 max-w-5xl mx-auto">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold">Historial reciente</h1>
-          <p className="opacity-70">Tus reproducciones más recientes desde Spotify.</p>
-        </div>
-
+    <MusicPageShell
+      title="Historial reciente"
+      description="Tus reproducciones más recientes desde Spotify."
+      actions={
         <button
           onClick={() => setBefore(nextBefore)}
           disabled={!nextBefore || loading}
-          className="rounded-xl border px-4 py-2 disabled:opacity-40"
+          className="rounded-lg px-4 py-2 text-sm disabled:opacity-40"
+          style={{ border: `2px solid ${RETRO.pink}`, color: RETRO.pink }}
         >
           Ver más antiguas
         </button>
-      </div>
+      }
+    >
+      {loading && <p style={{ color: RETRO.textSubtle }}>Cargando...</p>}
 
-      {loading && <p>Cargando...</p>}
-
-      <div className="grid gap-4">
+      <div className="grid gap-3">
         {items.map((track) => (
-          <article key={`${track.id}-${track.playedAt}`} className="border rounded-2xl p-4 flex gap-4 items-center">
-            <div className="w-16 h-16 rounded-lg overflow-hidden border shrink-0">
-              {track.image ? (
-                <img
-                  src={track.image}
-                  alt={track.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : null}
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <h2 className="font-semibold truncate">{track.name}</h2>
-              <p className="text-sm opacity-80 truncate">{track.artists}</p>
-              <p className="text-sm opacity-60 truncate">{track.album}</p>
-              <p className="text-xs opacity-50 mt-1">{formatDate(track.playedAt)}</p>
-            </div>
-
-            {track.spotifyUrl ? (
-              <a
-                href={track.spotifyUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-sm underline"
-              >
-                Abrir
-              </a>
-            ) : null}
-          </article>
+          <TrackRowCard
+            key={`${track.id}-${track.playedAt}`}
+            title={track.name}
+            subtitle={track.artists}
+            meta={formatDate(track.playedAt)}
+            image={track.image}
+            spotifyUrl={track.spotifyUrl}
+          />
         ))}
       </div>
-    </main>
+    </MusicPageShell>
   );
 }

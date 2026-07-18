@@ -2,6 +2,10 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import MusicPageShell from "@/src/app/components/music/MusicPageShell";
+import TrackRowCard from "@/src/app/components/music/TrackRowCard";
+import RetroPanel from "@/src/app/components/music/RetroPanel";
+import { RETRO, retroMono } from "@/src/app/components/music/retroTheme";
 
 type Track = {
   id: string;
@@ -62,52 +66,45 @@ function DiscoverContent() {
   }, [seedTrack, seedArtist]);
 
   return (
-    <main className="min-h-screen p-6 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-semibold mb-4">Discover</h1>
-
-      {loading && <p>Cargando descubrimiento...</p>}
-      {error && <p className="text-red-400">{error}</p>}
+    <MusicPageShell title="Discover" description="Recomendaciones a partir de tus canciones y artistas.">
+      {loading && <p style={{ color: RETRO.textSubtle }}>Cargando descubrimiento...</p>}
+      {error && <p style={{ color: RETRO.error }}>{error}</p>}
 
       {!loading && data?.fallback ? (
-        <div className="rounded-2xl border p-6 mb-6">
-          <p className="opacity-80">
+        <RetroPanel title="FALLBACK" accent={RETRO.yellow} className={`${retroMono.className} mb-6`}>
+          <p style={{ fontSize: "1rem", color: RETRO.textSubtle }}>
             Recommendations nativo no está habilitado para esta app.
             Mostrando fallback por artista
             {data.artistName ? `: ${data.artistName}` : ""}.
           </p>
-        </div>
+        </RetroPanel>
       ) : null}
 
       <div className="grid gap-4">
         {data?.tracks?.map((track) => (
-          <article key={track.id} className="border rounded-2xl p-4 flex gap-4 items-center">
-            <div className="w-16 h-16 rounded-lg overflow-hidden border shrink-0">
-              {track.image ? (
-                <img src={track.image} alt={track.name} className="w-full h-full object-cover" />
-              ) : null}
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <h2 className="font-semibold truncate">{track.name}</h2>
-              <p className="text-sm opacity-80 truncate">{track.artists}</p>
-              <p className="text-sm opacity-60 truncate">{track.album}</p>
-            </div>
-
-            {track.spotifyUrl ? (
-              <a href={track.spotifyUrl} target="_blank" rel="noreferrer" className="text-sm underline">
-                Abrir
-              </a>
-            ) : null}
-          </article>
+          <TrackRowCard
+            key={track.id}
+            title={track.name}
+            subtitle={track.artists}
+            meta={track.album}
+            image={track.image}
+            spotifyUrl={track.spotifyUrl}
+          />
         ))}
       </div>
-    </main>
+    </MusicPageShell>
   );
 }
 
 export default function DiscoverPage() {
   return (
-    <Suspense fallback={<main className="min-h-screen p-6 max-w-5xl mx-auto"><p>Cargando...</p></main>}>
+    <Suspense
+      fallback={
+        <MusicPageShell title="Discover">
+          <p style={{ color: RETRO.textSubtle }}>Cargando...</p>
+        </MusicPageShell>
+      }
+    >
       <DiscoverContent />
     </Suspense>
   );

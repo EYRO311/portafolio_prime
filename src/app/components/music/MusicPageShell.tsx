@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { useTheme } from "@/src/app/components/utils/ThemeContext";
+import { RETRO, pixelFont, retroMono, retroFontVars } from "@/src/app/components/music/retroTheme";
 
 type MusicPageShellProps = {
   title: string;
@@ -16,27 +16,19 @@ export default function MusicPageShell({
   actions,
   children,
 }: MusicPageShellProps) {
-  const { darkMode: dark } = useTheme();
-
   return (
     <main
-      className="min-h-screen p-6"
-      style={{ color: dark ? "#ffffff" : "#0a0a0a" }}
+      className={`${retroFontVars} min-h-screen p-6`}
+      style={{ background: RETRO.bgGradient, color: RETRO.text }}
     >
-      <section className="mx-auto max-w-6xl pt-8">
+      <section className={`${retroMono.className} mx-auto max-w-6xl pt-8`}>
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1
-              className="text-3xl font-semibold"
-              style={{ color: dark ? "#ffffff" : "#0a0a0a" }}
-            >
+            <h1 className={pixelFont.className} style={{ fontSize: "1.5rem", color: RETRO.pink, textShadow: `2px 2px 0 ${RETRO.cyan}` }}>
               {title}
             </h1>
             {description ? (
-              <p
-                className="mt-1"
-                style={{ color: dark ? "rgba(255,255,255,0.65)" : "rgba(0,0,0,0.55)" }}
-              >
+              <p className="mt-2" style={{ fontSize: "1.05rem", color: RETRO.textMuted }}>
                 {description}
               </p>
             ) : null}

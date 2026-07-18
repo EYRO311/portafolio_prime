@@ -1,3 +1,5 @@
+import { RETRO } from "@/src/app/components/music/retroTheme";
+
 type CoverProps = {
   src: string | null;
   alt: string;
@@ -12,7 +14,8 @@ export default function Cover({
   if (!src) {
     return (
       <div
-        className={`${className} flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs opacity-60`}
+        className={`${className} flex shrink-0 items-center justify-center rounded-lg text-xs`}
+        style={{ border: `2px solid ${RETRO.border}`, background: RETRO.panel, color: RETRO.textMuted }}
       >
         No image
       </div>
@@ -23,7 +26,8 @@ export default function Cover({
     <img
       src={src}
       alt={alt}
-      className={`${className} rounded-xl border border-white/10 object-cover`}
+      className={`${className} shrink-0 rounded-lg object-cover`}
+      style={{ border: `2px solid ${RETRO.border}` }}
     />
   );
 }

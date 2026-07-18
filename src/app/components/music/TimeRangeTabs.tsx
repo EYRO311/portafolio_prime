@@ -1,3 +1,5 @@
+import { RETRO } from "@/src/app/components/music/retroTheme";
+
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
 type TimeRangeTabsProps = {
@@ -19,20 +21,24 @@ export default function TimeRangeTabs({
 }: TimeRangeTabsProps) {
   return (
     <>
-      {(Object.keys(labels) as TimeRange[]).map((range) => (
-        <button
-          key={range}
-          onClick={() => onChange(range)}
-          disabled={disabled}
-          className={`rounded-xl border px-3 py-2 text-sm transition ${
-            value === range
-              ? "border-white/30 bg-white/10"
-              : "border-white/10 hover:bg-white/5"
-          } disabled:cursor-not-allowed disabled:opacity-60`}
-        >
-          {labels[range]}
-        </button>
-      ))}
+      {(Object.keys(labels) as TimeRange[]).map((range) => {
+        const active = value === range;
+        return (
+          <button
+            key={range}
+            onClick={() => onChange(range)}
+            disabled={disabled}
+            className="rounded-lg px-3 py-2 text-sm transition disabled:cursor-not-allowed disabled:opacity-60"
+            style={{
+              border: `2px solid ${active ? RETRO.cyan : RETRO.border}`,
+              background: active ? "rgba(5,217,232,0.15)" : "transparent",
+              color: active ? RETRO.cyan : RETRO.text,
+            }}
+          >
+            {labels[range]}
+          </button>
+        );
+      })}
     </>
   );
 }
