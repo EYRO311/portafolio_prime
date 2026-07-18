@@ -21,9 +21,13 @@ function toEmbedUrl(url: string): string {
   return url
 }
 
+function isDriveLink(url: string): boolean {
+  return url.includes('drive.google.com')
+}
+
 function getPreviewSource(p: Project): string | null {
   if (p.live) return p.live
-  if (p.certificateUrl && p.certificateUrl.includes('drive.google.com')) return p.certificateUrl
+  if (p.certificateUrl && isDriveLink(p.certificateUrl)) return p.certificateUrl
   return null
 }
 
@@ -389,6 +393,8 @@ const CSS = `
     transition: all 0.2s; white-space: nowrap;
   }
   .cert-link:hover { background: color-mix(in srgb, var(--accent2) 16%, transparent); }
+  .cert-links { display: flex; align-items: center; gap: 0.45rem; flex-shrink: 0; }
+  .cert-link-btn { cursor: pointer; font-family: inherit; }
 
   /* ════════════ EXPERIENCE ════════════ */
   .exp-list { display: flex; flex-direction: column; gap: 1.4rem; width: 100%; }
@@ -607,17 +613,17 @@ export default function HomeClient({
   const t = UI[locale]
   const [emailCopied, setEmailCopied] = useState(false)
   const [descExpanded, setDescExpanded] = useState(false)
-  const [previewProject, setPreviewProject] = useState<Project | null>(null)
+  const [preview, setPreview] = useState<{ title: string; url: string } | null>(null)
   const [projectQuery, setProjectQuery] = useState('')
 
   useEffect(() => {
-    if (!previewProject) return
+    if (!preview) return
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setPreviewProject(null)
+      if (e.key === 'Escape') setPreview(null)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [previewProject])
+  }, [preview])
 
   const firstName = profile.name.split(' ')[0]
   const shortRole = profile.role[locale].split('|')[0].trim()
@@ -735,11 +741,22 @@ export default function HomeClient({
                   return (
                     <div key={cert} className="cert-card">
                       <span className="cert-name">{cert}</span>
-                      {link && (
-                        <a href={link} className="cert-link" target="_blank" rel="noopener">
-                          {t.verify}
-                        </a>
-                      )}
+                      <div className="cert-links">
+                        {link && isDriveLink(link) && (
+                          <button
+                            type="button"
+                            className="cert-link cert-link-btn"
+                            onClick={() => setPreview({ title: cert, url: link })}
+                          >
+                            {t.preview}
+                          </button>
+                        )}
+                        {link && (
+                          <a href={link} className="cert-link" target="_blank" rel="noopener">
+                            {t.verify}
+                          </a>
+                        )}
+                      </div>
                     </div>
                   )
                 })}
@@ -824,7 +841,7 @@ export default function HomeClient({
                             </div>
                             <div className="proj-links">
                               {previewSource && (
-                                <button type="button" className="proj-link proj-link-btn" onClick={() => setPreviewProject(p)}>
+                                <button type="button" className="proj-link proj-link-btn" onClick={() => setPreview({ title: p.title[locale], url: previewSource })}>
                                   {t.preview}
                                 </button>
                               )}
@@ -902,27 +919,22 @@ export default function HomeClient({
 
       </main>
 
-      {previewProject && (() => {
-        const source = getPreviewSource(previewProject)
-        if (!source) return null
-        const embedSrc = toEmbedUrl(source)
-        return (
-          <div className="preview-overlay" onClick={() => setPreviewProject(null)}>
-            <div className="preview-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="preview-header">
-                <span className="preview-title">{previewProject.title[locale]}</span>
-                <div className="preview-actions">
-                  <a href={source} target="_blank" rel="noopener">{t.openInNewTab}</a>
-                  <button type="button" className="preview-close" aria-label={t.closePreview} onClick={() => setPreviewProject(null)}>
-                    ✕
-                  </button>
-                </div>
+      {preview && (
+        <div className="preview-overlay" onClick={() => setPreview(null)}>
+          <div className="preview-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="preview-header">
+              <span className="preview-title">{preview.title}</span>
+              <div className="preview-actions">
+                <a href={preview.url} target="_blank" rel="noopener">{t.openInNewTab}</a>
+                <button type="button" className="preview-close" aria-label={t.closePreview} onClick={() => setPreview(null)}>
+                  ✕
+                </button>
               </div>
-              <iframe src={embedSrc} title={previewProject.title[locale]} allow="clipboard-write" />
             </div>
+            <iframe src={toEmbedUrl(preview.url)} title={preview.title} allow="clipboard-write" />
           </div>
-        )
-      })()}
+        </div>
+      )}
     </>
   )
 }
