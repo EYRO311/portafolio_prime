@@ -33,6 +33,12 @@ const TYPE_COLORS: Record<string, string> = {
   teaching: '#a855f7',
 }
 
+const PROJECT_GROUPS: { type: string; en: string; es: string }[] = [
+  { type: 'work', en: 'Work', es: 'Trabajo' },
+  { type: 'project', en: 'Projects', es: 'Proyectos' },
+  { type: 'teaching', en: 'Teaching & Speaking', es: 'Docencia y Conferencias' },
+]
+
 const CERT_LINKS: Record<string, string> = {
   'The Full Stack': 'https://coursera.org/verify/RM9BLFYDD0NL',
   'Programming in Python': 'https://coursera.org/verify/5ACDPFELXTKQ',
@@ -151,7 +157,7 @@ const CSS = `
     font-family: var(--font-anta), sans-serif;
   }
 
-  .hero-role, .sec-tag, .cat-label, .cert-heading {
+  .hero-role, .sec-tag, .cat-label, .cert-heading, .proj-group-title {
     font-family: var(--font-asimovian), sans-serif;
   }
 
@@ -397,6 +403,13 @@ const CSS = `
 
   /* ════════════ PROJECTS ════════════ */
   .proj-section { display: flex; flex-direction: column; gap: 2.5rem; width: 100%; }
+  .proj-groups { display: flex; flex-direction: column; gap: 2.25rem; }
+  .proj-group-title {
+    font-size: 0.72rem; font-weight: 800; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--accent2);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent2) 28%, transparent);
+    margin-bottom: 1rem;
+  }
   .proj-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 1.25rem;
   }
@@ -741,39 +754,50 @@ export default function HomeClient({
               <h2 className="sec-h2">{t.myPrefix} <span className="accent-word">{t.projectsWord}</span></h2>
             </div>
 
-            <div className="proj-grid">
-              {projects.map(p => {
-                const accent = TYPE_COLORS[p.type] ?? 'var(--accent1)'
-                const previewSource = getPreviewSource(p)
+            <div className="proj-groups">
+              {PROJECT_GROUPS.map(group => {
+                const items = projects.filter(p => p.type === group.type)
+                if (items.length === 0) return null
                 return (
-                  <article key={p.slug} className="proj-card">
-                    <div className="proj-top">
-                      <h3 className="proj-title">{p.title[locale]}</h3>
-                      <span
-                        className="proj-badge"
-                        style={{ color: accent, borderColor: `${accent}45`, background: `${accent}12` }}
-                      >
-                        {p.type}
-                      </span>
+                  <div key={group.type}>
+                    <p className="proj-group-title">{group[locale]}</p>
+                    <div className="proj-grid">
+                      {items.map(p => {
+                        const accent = TYPE_COLORS[p.type] ?? 'var(--accent1)'
+                        const previewSource = getPreviewSource(p)
+                        return (
+                          <article key={p.slug} className="proj-card">
+                            <div className="proj-top">
+                              <h3 className="proj-title">{p.title[locale]}</h3>
+                              <span
+                                className="proj-badge"
+                                style={{ color: accent, borderColor: `${accent}45`, background: `${accent}12` }}
+                              >
+                                {p.type}
+                              </span>
+                            </div>
+                            <p className="proj-desc">{p.description[locale]}</p>
+                            <div className="proj-stack">
+                              {p.stack.map(tech => <span key={tech} className="proj-tag">{tech}</span>)}
+                            </div>
+                            <div className="proj-links">
+                              {previewSource && (
+                                <button type="button" className="proj-link proj-link-btn" onClick={() => setPreviewProject(p)}>
+                                  {t.preview}
+                                </button>
+                              )}
+                              {p.repo && <a href={p.repo} className="proj-link" target="_blank" rel="noopener">{t.repo}</a>}
+                              {p.live && <a href={p.live} className="proj-link" target="_blank" rel="noopener">{t.live}</a>}
+                              {p.certificateUrl && <a href={p.certificateUrl} className="proj-link" target="_blank" rel="noopener">{t.certificateLink}</a>}
+                              {!p.repo && !p.live && !p.certificateUrl && (
+                                <span className="proj-link" style={{ opacity: 0.3, cursor: 'default' }}>{t.privateConfidential}</span>
+                              )}
+                            </div>
+                          </article>
+                        )
+                      })}
                     </div>
-                    <p className="proj-desc">{p.description[locale]}</p>
-                    <div className="proj-stack">
-                      {p.stack.map(tech => <span key={tech} className="proj-tag">{tech}</span>)}
-                    </div>
-                    <div className="proj-links">
-                      {previewSource && (
-                        <button type="button" className="proj-link proj-link-btn" onClick={() => setPreviewProject(p)}>
-                          {t.preview}
-                        </button>
-                      )}
-                      {p.repo && <a href={p.repo} className="proj-link" target="_blank" rel="noopener">{t.repo}</a>}
-                      {p.live && <a href={p.live} className="proj-link" target="_blank" rel="noopener">{t.live}</a>}
-                      {p.certificateUrl && <a href={p.certificateUrl} className="proj-link" target="_blank" rel="noopener">{t.certificateLink}</a>}
-                      {!p.repo && !p.live && !p.certificateUrl && (
-                        <span className="proj-link" style={{ opacity: 0.3, cursor: 'default' }}>{t.privateConfidential}</span>
-                      )}
-                    </div>
-                  </article>
+                  </div>
                 )
               })}
             </div>
