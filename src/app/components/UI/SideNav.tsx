@@ -1,12 +1,15 @@
 "use client"
 
+import { useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useLocale } from '@/src/app/components/utils/LocaleContext'
 
 const LABELS = {
-  en: { home: 'Home', skills: 'Skills', projects: 'Projects', contact: 'Contact', music: 'Music' },
-  es: { home: 'Inicio', skills: 'Habilidades', projects: 'Proyectos', contact: 'Contacto', music: 'Música' },
+  en: { home: 'Home', skills: 'Skills', experience: 'Experience', projects: 'Projects', contact: 'Contact', music: 'Music' },
+  es: { home: 'Inicio', skills: 'Habilidades', experience: 'Experiencia', projects: 'Proyectos', contact: 'Contacto', music: 'Música' },
 }
+
+const SECTION_IDS = ['hero', 'skills', 'experience', 'projects', 'contact']
 
 const IconHome = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -22,6 +25,12 @@ const IconCpu = () => (
     <line x1="9" y1="20" x2="9" y2="23" /><line x1="15" y1="20" x2="15" y2="23" />
     <line x1="20" y1="9" x2="23" y2="9" /><line x1="20" y1="14" x2="23" y2="14" />
     <line x1="1" y1="9" x2="4" y2="9" /><line x1="1" y1="14" x2="4" y2="14" />
+  </svg>
+)
+const IconBriefcase = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2" />
+    <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
   </svg>
 )
 const IconFolder = () => (
@@ -90,16 +99,56 @@ export default function SideNav() {
   const { locale } = useLocale()
   const t = LABELS[locale]
 
+  const [activeSection, setActiveSection] = useState('hero')
+
+  useEffect(() => {
+    if (!isHome) return
+
+    const els = SECTION_IDS.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+    if (!els.length) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0]
+        if (visible?.target?.id) setActiveSection(visible.target.id)
+      },
+      { root: null, rootMargin: '-120px 0px -60% 0px', threshold: [0.15, 0.25, 0.35, 0.5, 0.65] }
+    )
+
+    els.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [isHome])
+
   const sectionHref = (id: string) => (isHome ? `#${id}` : `/#${id}`)
+  const isActive = (id: string) => isHome && activeSection === id
+
+  const items = useMemo(
+    () => [
+      { id: 'hero', label: t.home, icon: <IconHome /> },
+      { id: 'skills', label: t.skills, icon: <IconCpu /> },
+      { id: 'experience', label: t.experience, icon: <IconBriefcase /> },
+      { id: 'projects', label: t.projects, icon: <IconFolder /> },
+      { id: 'contact', label: t.contact, icon: <IconContact /> },
+    ],
+    [t]
+  )
 
   return (
     <>
       <style>{CSS}</style>
       <nav className="sidebar" aria-label="Navigation">
-        <a href={sectionHref('hero')} className={`si${isHome ? ' active' : ''}`} title={t.home}><IconHome /></a>
-        <a href={sectionHref('skills')} className="si" title={t.skills}><IconCpu /></a>
-        <a href={sectionHref('projects')} className="si" title={t.projects}><IconFolder /></a>
-        <a href={sectionHref('contact')} className="si" title={t.contact}><IconContact /></a>
+        {items.map((item) => (
+          <a
+            key={item.id}
+            href={sectionHref(item.id)}
+            className={`si${isActive(item.id) ? ' active' : ''}`}
+            title={item.label}
+          >
+            {item.icon}
+          </a>
+        ))}
         <a href="/music" className={`si${isMusic ? ' active' : ''}`} title={t.music}><IconMusic /></a>
       </nav>
     </>

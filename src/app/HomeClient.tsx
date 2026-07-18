@@ -66,6 +66,8 @@ const UI = {
     verify: 'Verify ↗',
     portfolio: 'Portfolio',
     projectsWord: 'Projects',
+    searchPlaceholder: 'Search projects by name, tech, description…',
+    noResults: 'No projects match your search.',
     repo: '↳ Repo',
     live: '↳ Live ↗',
     certificateLink: '↳ Certificate ↗',
@@ -98,6 +100,8 @@ const UI = {
     verify: 'Verificar ↗',
     portfolio: 'Portafolio',
     projectsWord: 'Proyectos',
+    searchPlaceholder: 'Buscar proyectos por nombre, tecnología, descripción…',
+    noResults: 'Ningún proyecto coincide con tu búsqueda.',
     repo: '↳ Repo',
     live: '↳ Demo ↗',
     certificateLink: '↳ Certificado ↗',
@@ -153,7 +157,8 @@ const CSS = `
   /* ── Zen Dots para títulos de certificados, Audiowide para el nombre ── */
   .hero-hi, .hero-desc, .hero-desc-toggle, .sec-body, .htag, .cat-chip, .lang-chip,
   .proj-desc, .proj-tag, .proj-badge, .proj-link, .exp-highlights li, .exp-dates,
-  .exp-company, .contact-value, .contact-label, .page-footer, .footer-links a {
+  .exp-company, .contact-value, .contact-label, .page-footer, .footer-links a,
+  .proj-search, .proj-no-results {
     font-family: var(--font-anta), sans-serif;
   }
 
@@ -403,6 +408,20 @@ const CSS = `
 
   /* ════════════ PROJECTS ════════════ */
   .proj-section { display: flex; flex-direction: column; gap: 2.5rem; width: 100%; }
+  .proj-search {
+    width: 100%; max-width: 420px;
+    padding: 0.62rem 1rem; border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--accent1) 20%, transparent);
+    background: color-mix(in srgb, var(--accent1) 3%, transparent);
+    color: var(--text); font-size: 0.88rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .proj-search::placeholder { color: var(--text-subtle); }
+  .proj-search:focus {
+    outline: none; border-color: var(--accent1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent1) 15%, transparent);
+  }
+  .proj-no-results { font-size: 0.9rem; color: var(--text-subtle); }
   .proj-groups { display: flex; flex-direction: column; gap: 2.25rem; }
   .proj-group-title {
     font-size: 0.72rem; font-weight: 800; letter-spacing: 2.5px;
@@ -589,6 +608,7 @@ export default function HomeClient({
   const [emailCopied, setEmailCopied] = useState(false)
   const [descExpanded, setDescExpanded] = useState(false)
   const [previewProject, setPreviewProject] = useState<Project | null>(null)
+  const [projectQuery, setProjectQuery] = useState('')
 
   useEffect(() => {
     if (!previewProject) return
@@ -604,6 +624,16 @@ export default function HomeClient({
   const fullDesc = profile.summary[locale]
   const descIsLong = fullDesc.length > DESC_PREVIEW_LENGTH
   const descText = descExpanded || !descIsLong ? fullDesc : `${fullDesc.slice(0, DESC_PREVIEW_LENGTH)}…`
+
+  const q = projectQuery.trim().toLowerCase()
+  const filteredProjects = q
+    ? projects.filter(p =>
+        p.title[locale].toLowerCase().includes(q) ||
+        p.description[locale].toLowerCase().includes(q) ||
+        p.stack.some(s => s.toLowerCase().includes(q)) ||
+        p.type.toLowerCase().includes(q)
+      )
+    : projects
 
   const handleCopyEmail = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
@@ -754,9 +784,21 @@ export default function HomeClient({
               <h2 className="sec-h2">{t.myPrefix} <span className="accent-word">{t.projectsWord}</span></h2>
             </div>
 
+            <input
+              type="text"
+              className="proj-search"
+              placeholder={t.searchPlaceholder}
+              value={projectQuery}
+              onChange={(e) => setProjectQuery(e.target.value)}
+            />
+
+            {filteredProjects.length === 0 && (
+              <p className="proj-no-results">{t.noResults}</p>
+            )}
+
             <div className="proj-groups">
               {PROJECT_GROUPS.map(group => {
-                const items = projects.filter(p => p.type === group.type)
+                const items = filteredProjects.filter(p => p.type === group.type)
                 if (items.length === 0) return null
                 return (
                   <div key={group.type}>
