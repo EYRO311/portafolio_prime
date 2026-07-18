@@ -458,6 +458,16 @@ const CSS = `
                 0 0 28px color-mix(in srgb, var(--accent1) 7%, transparent);
   }
   .proj-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+  .proj-top-btn {
+    width: 100%; background: none; border: none; padding: 0; cursor: pointer;
+    font-family: inherit; text-align: left;
+  }
+  .proj-top-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+  .proj-arrow {
+    display: inline-flex; color: var(--text-subtle); font-size: 0.85rem;
+    transition: transform 0.2s;
+  }
+  .proj-arrow.open { transform: rotate(180deg); color: var(--accent1); }
   .proj-title { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.3; }
   .proj-badge {
     font-size: 0.58rem; font-weight: 800; letter-spacing: 1.5px;
@@ -615,6 +625,16 @@ export default function HomeClient({
   const [descExpanded, setDescExpanded] = useState(false)
   const [preview, setPreview] = useState<{ title: string; url: string } | null>(null)
   const [projectQuery, setProjectQuery] = useState('')
+  const [expandedProjects, setExpandedProjects] = useState<Set<string>>(new Set())
+
+  const toggleProject = (slug: string) => {
+    setExpandedProjects(prev => {
+      const next = new Set(prev)
+      if (next.has(slug)) next.delete(slug)
+      else next.add(slug)
+      return next
+    })
+  }
 
   useEffect(() => {
     if (!preview) return
@@ -824,34 +844,48 @@ export default function HomeClient({
                       {items.map(p => {
                         const accent = TYPE_COLORS[p.type] ?? 'var(--accent1)'
                         const previewSource = getPreviewSource(p)
+                        const expanded = expandedProjects.has(p.slug)
                         return (
                           <article key={p.slug} className="proj-card">
-                            <div className="proj-top">
+                            <button
+                              type="button"
+                              className="proj-top proj-top-btn"
+                              onClick={() => toggleProject(p.slug)}
+                              aria-expanded={expanded}
+                            >
                               <h3 className="proj-title">{p.title[locale]}</h3>
-                              <span
-                                className="proj-badge"
-                                style={{ color: accent, borderColor: `${accent}45`, background: `${accent}12` }}
-                              >
-                                {p.type}
+                              <span className="proj-top-right">
+                                <span
+                                  className="proj-badge"
+                                  style={{ color: accent, borderColor: `${accent}45`, background: `${accent}12` }}
+                                >
+                                  {p.type}
+                                </span>
+                                <span className={`proj-arrow${expanded ? ' open' : ''}`}>▾</span>
                               </span>
-                            </div>
-                            <p className="proj-desc">{p.description[locale]}</p>
-                            <div className="proj-stack">
-                              {p.stack.map(tech => <span key={tech} className="proj-tag">{tech}</span>)}
-                            </div>
-                            <div className="proj-links">
-                              {previewSource && (
-                                <button type="button" className="proj-link proj-link-btn" onClick={() => setPreview({ title: p.title[locale], url: previewSource })}>
-                                  {t.preview}
-                                </button>
-                              )}
-                              {p.repo && <a href={p.repo} className="proj-link" target="_blank" rel="noopener">{t.repo}</a>}
-                              {p.live && <a href={p.live} className="proj-link" target="_blank" rel="noopener">{t.live}</a>}
-                              {p.certificateUrl && <a href={p.certificateUrl} className="proj-link" target="_blank" rel="noopener">{t.certificateLink}</a>}
-                              {!p.repo && !p.live && !p.certificateUrl && (
-                                <span className="proj-link" style={{ opacity: 0.3, cursor: 'default' }}>{t.privateConfidential}</span>
-                              )}
-                            </div>
+                            </button>
+
+                            {expanded && (
+                              <>
+                                <p className="proj-desc">{p.description[locale]}</p>
+                                <div className="proj-stack">
+                                  {p.stack.map(tech => <span key={tech} className="proj-tag">{tech}</span>)}
+                                </div>
+                                <div className="proj-links">
+                                  {previewSource && (
+                                    <button type="button" className="proj-link proj-link-btn" onClick={() => setPreview({ title: p.title[locale], url: previewSource })}>
+                                      {t.preview}
+                                    </button>
+                                  )}
+                                  {p.repo && <a href={p.repo} className="proj-link" target="_blank" rel="noopener">{t.repo}</a>}
+                                  {p.live && <a href={p.live} className="proj-link" target="_blank" rel="noopener">{t.live}</a>}
+                                  {p.certificateUrl && <a href={p.certificateUrl} className="proj-link" target="_blank" rel="noopener">{t.certificateLink}</a>}
+                                  {!p.repo && !p.live && !p.certificateUrl && (
+                                    <span className="proj-link" style={{ opacity: 0.3, cursor: 'default' }}>{t.privateConfidential}</span>
+                                  )}
+                                </div>
+                              </>
+                            )}
                           </article>
                         )
                       })}
