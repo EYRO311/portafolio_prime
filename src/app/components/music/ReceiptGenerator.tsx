@@ -27,10 +27,11 @@ const PAPER_WIDTH = 480;
 const PADDING_X = 42;
 const ROW_HEIGHT = 40;
 
-// Textura real (public/receipt-paper.png): 887x1774px, borde recto arriba, dentado abajo.
+// Textura real (public/receipt-paper.png): 575x1666px, recortada al borde del papel
+// (sin margen transparente), borde recto arriba, dentado abajo.
 const PAPER_IMG_SRC = "/receipt-paper.png";
-const PAPER_IMG_NATURAL_WIDTH = 887;
-const PAPER_IMG_NATURAL_HEIGHT = 1774;
+const PAPER_IMG_NATURAL_WIDTH = 575;
+const PAPER_IMG_NATURAL_HEIGHT = 1666;
 const PAPER_IMG_EDGE_SLICE = 200; // px de la imagen original reservados para cada borde
 
 function loadImage(src: string): Promise<HTMLImageElement> {
