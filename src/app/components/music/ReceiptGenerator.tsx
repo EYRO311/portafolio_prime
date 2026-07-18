@@ -80,7 +80,7 @@ function drawBarcode(ctx: CanvasRenderingContext2D, x: number, y: number, width:
   while (cursor < end) {
     const barWidth = 1 + Math.random() * 3.2;
     if (Math.random() > 0.42) {
-      ctx.fillStyle = "#1a1a1a";
+      ctx.fillStyle = "#000000";
       ctx.fillRect(cursor, y, barWidth, height);
     }
     cursor += barWidth + 1;
@@ -104,18 +104,18 @@ async function drawReceipt(tracks: Track[], rangeLabel: string): Promise<HTMLCan
 
   drawPaperBackground(ctx, paperImg, PAPER_WIDTH, height);
 
-  ctx.fillStyle = "#1a1a1a";
+  ctx.fillStyle = "#000000";
   ctx.textAlign = "center";
 
   ctx.font = "bold 24px 'Courier New', monospace";
   ctx.fillText("★ MY TOP TRACKS ★", PAPER_WIDTH / 2, 42);
 
   ctx.font = "14px 'Courier New', monospace";
-  ctx.fillStyle = "#444";
+  ctx.fillStyle = "#1a1a1a";
   ctx.fillText(`RANGO: ${rangeLabel.toUpperCase()}`, PAPER_WIDTH / 2, 66);
   ctx.fillText(new Date().toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" }), PAPER_WIDTH / 2, 84);
 
-  ctx.strokeStyle = "#555";
+  ctx.strokeStyle = "#2a2a2a";
   ctx.setLineDash([4, 4]);
   ctx.beginPath();
   ctx.moveTo(PADDING_X, headerHeight - 10);
@@ -128,7 +128,7 @@ async function drawReceipt(tracks: Track[], rangeLabel: string): Promise<HTMLCan
   tracks.forEach((track, index) => {
     const rankText = `${String(index + 1).padStart(2, "0")}.`;
     ctx.font = "bold 14px 'Courier New', monospace";
-    ctx.fillStyle = "#1a1a1a";
+    ctx.fillStyle = "#000000";
     ctx.fillText(rankText, PADDING_X, y);
 
     const nameX = PADDING_X + 34;
@@ -137,14 +137,14 @@ async function drawReceipt(tracks: Track[], rangeLabel: string): Promise<HTMLCan
     ctx.fillText(truncateToWidth(ctx, track.name, maxNameWidth), nameX, y);
 
     ctx.font = "12px 'Courier New', monospace";
-    ctx.fillStyle = "#555";
+    ctx.fillStyle = "#2a2a2a";
     ctx.fillText(truncateToWidth(ctx, track.artists, maxNameWidth), nameX, y + 16);
 
     y += ROW_HEIGHT;
   });
 
   const barcodeSectionY = headerHeight + rowsHeight + 8;
-  ctx.strokeStyle = "#555";
+  ctx.strokeStyle = "#2a2a2a";
   ctx.setLineDash([4, 4]);
   ctx.beginPath();
   ctx.moveTo(PADDING_X, barcodeSectionY);
@@ -154,13 +154,13 @@ async function drawReceipt(tracks: Track[], rangeLabel: string): Promise<HTMLCan
 
   ctx.textAlign = "center";
   ctx.font = "12px 'Courier New', monospace";
-  ctx.fillStyle = "#444";
+  ctx.fillStyle = "#1a1a1a";
   ctx.fillText(`${tracks.length} TRACKS · EYRO.MUSIC`, PAPER_WIDTH / 2, barcodeSectionY + 24);
 
   drawBarcode(ctx, PADDING_X, barcodeSectionY + 38, PAPER_WIDTH - PADDING_X * 2, 44);
 
   ctx.font = "11px 'Courier New', monospace";
-  ctx.fillStyle = "#333";
+  ctx.fillStyle = "#111111";
   ctx.fillText(
     Array.from({ length: 12 }, () => Math.floor(Math.random() * 10)).join(""),
     PAPER_WIDTH / 2,
