@@ -64,6 +64,7 @@ const CSS = `
     transition: background 0.3s, border-color 0.3s;
   }
   .si {
+    position: relative;
     width: 36px; height: 36px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 10px; color: var(--text-subtle);
@@ -76,6 +77,19 @@ const CSS = `
     background: color-mix(in srgb, var(--accent1) 8%, transparent);
     box-shadow: 0 0 14px color-mix(in srgb, var(--accent1) 20%, transparent);
   }
+  .si::after {
+    content: attr(title);
+    position: absolute; left: calc(100% + 10px); top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    white-space: nowrap; font-size: 0.72rem; font-weight: 600;
+    padding: 0.35rem 0.65rem; border-radius: 8px;
+    background: var(--sidebar-bg);
+    border: 1px solid color-mix(in srgb, var(--accent1) 20%, transparent);
+    color: var(--text);
+    opacity: 0; pointer-events: none; z-index: 200;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .si:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
   @media (max-width: 900px) {
     .sidebar {
       position: fixed; bottom: 1.25rem; left: 50%; top: auto;
@@ -85,6 +99,11 @@ const CSS = `
       gap: 0.5rem; padding: 0.65rem 0.85rem; border-radius: 20px;
     }
     .si { width: 34px; height: 34px; }
+    .si::after {
+      left: 50%; top: auto; bottom: calc(100% + 10px);
+      transform: translateX(-50%) translateY(4px);
+    }
+    .si:hover::after { transform: translateX(-50%) translateY(0); }
   }
   @media (max-width: 480px) {
     .sidebar { max-width: min(90vw, 240px); gap: 0.4rem; padding: 0.55rem 0.7rem; }
